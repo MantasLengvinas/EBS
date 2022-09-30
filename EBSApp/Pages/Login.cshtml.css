@@ -1,0 +1,81 @@
+﻿.login-methods {
+    background-color: #172e62;
+    padding: 60px 0 120px 28px;
+}
+
+.login-title {
+    color: #172e62;
+}
+
+.url-btn {
+    color: #4057e3;
+    text-decoration: none;
+    cursor: pointer;
+}
+
+.btn-primary {
+    background-color: #4057e3;
+    padding: 0.5rem !important;
+}
+
+.font-size-23 {
+    font-size: 23px;
+}
+
+.ml-5 {
+    margin-left: 1rem;
+}
+
+.mr-5 {
+    margin-right: 1rem;
+}
+
+.pl-5 {
+    padding-left: 1rem;
+}
+
+.pr-5 {
+    padding-right: 1rem;
+}
+
+.nav-link {
+    color: #fff;
+    border-radius: 10px 0 0 10px;
+}
+
+    .nav-link:hover {
+        background-color: rgba(255, 255, 255, 0.2);
+    }
+
+    .nav-link.active {
+        background-color: #fff;
+        color: #172e62;
+    }
+
+    .nav-link.active > svg {
+        filter: invert(0.7);
+    }
+
+.rounded-borders-left {
+    border-radius: 10px 0 0 10px;
+}
+
+input.form-control {
+    padding: 0.75rem 0.875rem;
+    font-size: .875rem;
+    font-weight: 400;
+    line-height: 1.25rem;
+    color: #172e62;
+    border: 2px solid rgba(182,188,203,0.6);
+    border-radius: 0.25rem;
+    box-shadow: 0 0 0 transparent;
+    border-radius: 0.25rem;
+}
+
+.rounded-borders-right {
+    border-radius: 0 10px 10px 0;
+}
+
+.hidden {
+    display: none;
+}
