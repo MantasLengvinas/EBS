@@ -1,5 +1,5 @@
 ﻿using System;
-namespace EBSApi.Options
+namespace EBSAuthApi.Options
 {
     public class AuthenticationOptions
     {

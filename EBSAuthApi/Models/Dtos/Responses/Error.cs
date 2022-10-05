@@ -1,5 +1,5 @@
 ﻿using System;
-namespace EBSApp.Models.Dtos.Responses
+namespace EBSAuthApi.Models.Dtos.Responses
 {
     public class Error
     {

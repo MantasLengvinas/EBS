@@ -1,7 +1,7 @@
 ﻿using System;
-namespace EBSApp.Models.General
+namespace EBSAuthApi.Models.Dtos.Responses
 {
-    public class GenericResponse<T>
+    public class GenericResponse<T> where T : class, new()
     {
         public GenericResponse() {}
 

@@ -1,9 +1,11 @@
-﻿using EBSApi.Models.Authentication;
+﻿using EBSAuthApi.Models;
+using EBSAuthApi.Models.Dtos.Requests;
+using EBSAuthApi.Models.Dtos.Responses;
 
-namespace EBSApi.Services.Authentication
+namespace EBSAuthApi.Services
 {
     public interface IAuthenticationService
     {
-        string GetJwt(User user, CancellationToken cancelToken = default);
+        Task<UserJwt> AuthenticateUser(UserLogin userLogin, CancellationToken cancelToken);
     }
 }

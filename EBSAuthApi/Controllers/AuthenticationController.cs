@@ -2,30 +2,39 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
-using EBSApi.Models.Authentication;
-using EBSApi.Services.Authentication;
+using EBSAuthApi.Models;
+using EBSAuthApi.Models.Dtos.Requests;
+using EBSAuthApi.Models.Dtos.Responses;
+using EBSAuthApi.Services;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
-// For more information on enabling MVC for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
-
-namespace EBSApi.Controllers.Authentication
+namespace EBSAuthApi.Controllers.Authentication
 {
     [ApiController]
     [Route("api/auth")]
-    public class TokensController : ControllerBase
+    public class AuthenticationController : ControllerBase
     {
         private readonly IAuthenticationService _authService;
 
-        public TokensController(IAuthenticationService authenticationService)
+        public AuthenticationController(IAuthenticationService authenticationService)
         {
             _authService = authenticationService ?? throw new ArgumentNullException(nameof(authenticationService));
         }
 
         [HttpPost]
-        public IActionResult GetJwt(User user, CancellationToken cancelToken)
+        public async Task<ActionResult<GenericResponse<UserJwt>>> AuthenticateUser(UserLogin user, CancellationToken cancelToken)
         {
-            string jwt = _authService.GetJwt(user, cancelToken);
+            UserJwt jwt = await _authService.AuthenticateUser(user, cancelToken);
+
+            if (jwt is null)
+                return Forbid();
+
+            GenericResponse<UserJwt> response = new()
+            {
+                Data = jwt,
+            };
+
             return Ok(jwt);
         }
     }
