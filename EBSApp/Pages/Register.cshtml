@@ -1,6 +1,4 @@
 ﻿@page
-@model EBSApp.Pages.LoginModel
-@addTagHelper *, Microsoft.AspNetCore.Mvc.TagHelpers
 
 <!DOCTYPE html>
 <html lang="en">
@@ -14,7 +12,7 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.2.0/css/all.min.css" integrity="sha512-xh6O/CkQoPOWDdYTDqeRdPCVd1SpvCA9XXcUnZS2FmJNp1coAFzvtCN9BmamE+4aHK8yyUHUSCcJHgXloTyT2A==" crossorigin="anonymous" referrerpolicy="no-referrer" />
     <link href="css/site.css" rel="stylesheet" />
     <link href="EBSApp.styles.css" rel="stylesheet" />
-    <title>EBS login</title>
+    <title>EBS register</title>
 
     <style>
         .login-page {
@@ -37,7 +35,7 @@
                             <h3 class="text-white">LOGO</h3>
                         </div>
                         <div class="pt-3 pb-3 ml-5 small text-muted">
-                            Prisijungimo būdai
+                            Registracijos būdai
                         </div>
                         <nav class="nav flex-column">
                             <a id="useEmailLogin" class="nav-link d-flex align-items-center pt-3 pb-3 active"><i class="fa-solid fa-envelope mr-5 font-size-23"></i>El. paštas ir slaptažodis</a>
@@ -47,41 +45,38 @@
                     <div class="col-md-8 rounded-borders-right" style="background-color:white;">
                         <div class="p-5">
                             <div id="email-login">
-                                <form class="mb-5" method="post">
-                                    <h3 class="login-title mb-5 ml-5">Prisijunkite</h3>
+                                <div class="d-flex justify-content-center align-items-center pb-5">
+                                    <span class="">Turite paskyrą? <a href="./login" class="url-btn font-weight-bold">Prisijunkite</a></span>
+                                </div>
+                                <form class="mb-5">
+                                    <h3 class="login-title mb-5 ml-5">Registruokitės</h3>
                                     <div class="form-group m-3">
                                         <label for="email">El. paštas</label>
-                                        <input name="email" type="email" class="form-control" id="email">
+                                        <input type="email" class="form-control" id="email">
                                     </div>
                                     <div class="form-group m-3">
                                         <label for="password">Slaptažodis</label>
-                                        <input name="password" type="password" class="form-control" id="password" aria-describedby="forgotPassword">
-                                        <div class="d-flex justify-content-end mt-1">
-                                            <a id="forgotPassword" class="url-btn">Pamiršau slaptažodį</a>
-                                        </div>
+                                        <input type="password" class="form-control" id="password" aria-describedby="forgotPassword">
                                     </div>
                                     <div class="w-100 d-flex justify-content-center pr-5 pl-5 pt-3">
-                                        <button type="submit" class="btn btn-primary w-100">Prisijungti</button>
+                                        <button type="submit" class="btn btn-primary w-100">Registruotis</button>
                                     </div>
                                 </form>
-                                <div class="d-flex justify-content-center align-items-center pt-5">
-                                    <span class="">Neturite paskyros? <a class="url-btn font-weight-bold">Registruokitės</a></span>
-                                </div>
                             </div>
                             <div id="smartId-login" class="hidden">
+                                <div class="d-flex justify-content-center align-items-center pb-5">
+                                    <span class="">Turite paskyrą? <a href="./login" class="url-btn font-weight-bold">Prisjunkite</a></span>
+                                </div>
                                 <form class="mb-5">
-                                    <h3 class="login-title mb-5 ml-5">Prisijunkite su Smart-ID</h3>
+                                    <h3 class="login-title mb-5 ml-5">Registruokitės su Smart-ID</h3>
                                     <div class="form-group m-3">
                                         <label for="ssn">Asmens kodas</label>
                                         <input type="text" class="form-control" id="ssn">
                                     </div>
                                     <div class="w-100 d-flex justify-content-center pr-5 pl-5 pt-3">
-                                        <button type="submit" class="btn btn-primary w-100">Prisijungti su Smart-ID</button>
+                                        <button type="submit" class="btn btn-primary w-100">Registruotis su Smart-ID</button>
                                     </div>
                                 </form>
-                                <div class="d-flex justify-content-center align-items-center pt-5">
-                                    <span class="">Neturite paskyros? <a class="url-btn font-weight-bold">Registruokitės</a></span>
-                                </div>
                             </div>
                         </div>
                     </div>
