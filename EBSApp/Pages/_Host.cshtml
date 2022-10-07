@@ -9,13 +9,13 @@
 }
 
 @{
-    @*var tokens = new InitialAppState
+    var tokens = new InitialAppState
     {
         AccessToken = await HttpContext.GetTokenAsync("access_token"),
         RefreshToken = await HttpContext.GetTokenAsync("refresh_token")
-    };*@
+    };
 }
 
 
-<component type="typeof(App)" render-mode="ServerPrerendered" />
+<component type="typeof(App)" render-mode="Server" />
 

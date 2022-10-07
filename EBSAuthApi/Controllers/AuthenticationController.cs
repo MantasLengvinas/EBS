@@ -12,7 +12,7 @@ using Microsoft.AspNetCore.Mvc;
 namespace EBSAuthApi.Controllers.Authentication
 {
     [ApiController]
-    [Route("api/auth")]
+    [Route("auth")]
     public class AuthenticationController : ControllerBase
     {
         private readonly IAuthenticationService _authService;
@@ -22,20 +22,21 @@ namespace EBSAuthApi.Controllers.Authentication
             _authService = authenticationService ?? throw new ArgumentNullException(nameof(authenticationService));
         }
 
-        [HttpPost]
-        public async Task<ActionResult<GenericResponse<UserJwt>>> AuthenticateUser(UserLogin user, CancellationToken cancelToken)
+        [HttpPost("login")]
+        public async Task<ActionResult<AuthResponseDto>> AuthenticateUser(UserLogin user, CancellationToken cancelToken)
         {
-            UserJwt jwt = await _authService.AuthenticateUser(user, cancelToken);
+
+            string jwt = await _authService.AuthenticateUser(user, cancelToken);
 
             if (jwt is null)
-                return Forbid();
+                return Unauthorized();
 
-            GenericResponse<UserJwt> response = new()
-            {
-                Data = jwt,
-            };
-
-            return Ok(jwt);
+            return Ok(
+                new AuthResponseDto
+                {
+                    SessionToken = jwt,
+                    Status = "success"
+                });
         }
     }
 }

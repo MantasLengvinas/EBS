@@ -14,43 +14,16 @@ namespace EBSAuthApi.Services
     public class AuthenticationService : IAuthenticationService
     {
         private readonly AuthenticationOptions _options;
-        private readonly RsaSecurityKey _key;
 
-        public AuthenticationService(IOptions<AuthenticationOptions> options, RsaSecurityKey key)
+        private readonly IJwtGenerator _jwtGenerator;
+
+        public AuthenticationService(IOptions<AuthenticationOptions> options, IJwtGenerator jwtGenerator)
         {
             _options = options.Value ?? throw new ArgumentNullException(nameof(options));
-            _key = key ?? throw new ArgumentNullException(nameof(key));
+            _jwtGenerator = jwtGenerator ?? throw new ArgumentNullException(nameof(jwtGenerator));
         }
 
-        private UserJwt GetJwt(User user, CancellationToken cancelToken)
-        {
-            var tokenDescriptor = new SecurityTokenDescriptor
-            {
-                Subject = new ClaimsIdentity(new[]
-                {
-                    new Claim("Id", user.Id.ToString()),
-                    new Claim("Email", user.Email),
-                    new Claim("FullName", user.FullName),
-                    new Claim("Phone", user.Phone)
-                }),
-                Expires = DateTime.UtcNow.AddMinutes(30),
-                Issuer = _options.Issuer,
-                Audience = _options.Audience
-            };
-
-            JwtSecurityTokenHandler tokenHandler = new JwtSecurityTokenHandler();
-            SecurityToken token = tokenHandler.CreateToken(tokenDescriptor);
-            string stringToken = tokenHandler.WriteToken(token);
-
-            UserJwt jwt = new()
-            {
-                Jwt = stringToken
-            };
-
-            return jwt;
-        }
-
-        public async Task<UserJwt> AuthenticateUser(UserLogin userLogin, CancellationToken cancelToken)
+        public async Task<string> AuthenticateUser(UserLogin userLogin, CancellationToken cancelToken)
         {
             if(userLogin.Email == "Mantas@gmail.com" && userLogin.Password == "testas")
             {
@@ -58,11 +31,13 @@ namespace EBSAuthApi.Services
                 {
                     Email = "Mantas@gmail.com",
                     FullName = "Mantas Lengvinas",
-                    Id = 1,
+                    Id = "1",
                     Phone = "667987912"
                 };
 
-                return GetJwt(user, cancelToken);
+                string accessToken = _jwtGenerator.CreateAccessToken(user, _options.Audience, _options.Issuer, 3600);
+
+                return accessToken;
             }
 
             return null;

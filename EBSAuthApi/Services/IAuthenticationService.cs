@@ -6,6 +6,6 @@ namespace EBSAuthApi.Services
 {
     public interface IAuthenticationService
     {
-        Task<UserJwt> AuthenticateUser(UserLogin userLogin, CancellationToken cancelToken);
+        Task<string> AuthenticateUser(UserLogin userLogin, CancellationToken cancelToken);
     }
 }
