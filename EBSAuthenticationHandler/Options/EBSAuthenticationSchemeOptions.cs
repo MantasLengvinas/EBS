@@ -3,17 +3,11 @@ using Microsoft.AspNetCore.Authentication;
 
 namespace EBSAuthenticationHandler.Options
 {
-    public class EBSAuthenticationSchemeOptions : RemoteAuthenticationOptions
+    public class EBSAuthenticationSchemeOptions : AuthenticationOptions
     {
-        public string AuthUrl { get; set; }
-
-        public string AuthAppUrl { get; set; }
-
         public string AuthApiUrl { get; set; }
 
         public string ApiKey { get; set; }
-
-        public bool RequestRefreshToken { get; set; }
 
         public bool IsPersistent { get; set; }
 
@@ -23,7 +17,7 @@ namespace EBSAuthenticationHandler.Options
 
         public string TokenPublicSigningKey { get; set; }
 
-        public int TOkenExpirationInSeconds { get; set; }
+        public int TokenExpirationInSeconds { get; set; }
 
         public HttpClient ApiClient { get; set; }
     }

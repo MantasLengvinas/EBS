@@ -17,8 +17,15 @@ namespace EBSAuthenticationHandler.Helpers
             return handler.ReadJwtToken(token);
         }
 
-        public static bool IsValidToken(string token, string key, string audience, string issuer)
+        public static bool IsValidToken(string? token, string key, string audience, string issuer)
         {
+            if (token == null)
+                return false;
+
+            RSACryptoServiceProvider rsa = new();
+
+            rsa.ImportSubjectPublicKeyInfo(Convert.FromBase64String(key), out _);
+
             JwtSecurityTokenHandler handler = new();
 
             TokenValidationParameters validationParams = new()
@@ -27,7 +34,8 @@ namespace EBSAuthenticationHandler.Helpers
                 ValidateAudience = true,
                 ValidateIssuer = true,
                 ValidIssuer = issuer,
-                ValidAudience = audience
+                ValidAudience = audience,
+                IssuerSigningKey = new RsaSecurityKey(rsa)
             };
 
             try
@@ -42,14 +50,17 @@ namespace EBSAuthenticationHandler.Helpers
             return true;
         }
 
-        public static ClaimsPrincipal GetClaimsPrincipal(string accessToken)
+        public static ClaimsPrincipal? GetClaimsPrincipal(string? accessToken)
         {
+            if (accessToken == null)
+                return null;
+
             IEnumerable<Claim> claims = JwtHelper.GetJwtSecurityToken(accessToken).Claims;
 
             ClaimsIdentity identity = new ClaimsIdentity(
                 claims,
                 EBSAuthenticationDefaults.AuthenticationScheme,
-                ClaimTypesConstants.FullName,
+                ClaimTypesConstants.Email,
                 null);
 
             if (identity.Name == null)

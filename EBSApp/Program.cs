@@ -36,14 +36,16 @@ builder.Services.AddScoped<IApiClient, ApiClient>(config => {
 
 });
 
+builder.Services.AddScoped<TokenStore>();
+
 builder.Services.AddEBSAuthentication(options =>
 {
-    options.SaveTokens = true;
-    options.RequestRefreshToken = true;
     options.TokenAudience = builder.Configuration.GetValue<string>("Auth:TokenAudience");
     options.TokenIssuer = builder.Configuration.GetValue<string>("Auth:TokenIssuer");
     options.AuthApiUrl = builder.Configuration.GetValue<string>("Auth:AuthApiUri");
-    options.CallbackPath = "/login-callback";
+    options.TokenExpirationInSeconds = builder.Configuration.GetValue<int>("Auth:TokenExpirationTimeInSeconds");
+    options.ApiKey = builder.Configuration.GetValue<string>("Auth:ApiKey");
+    options.TokenPublicSigningKey = builder.Configuration.GetValue<string>("Auth:SigningKey");
 });
 
 var app = builder.Build();

@@ -1,6 +1,9 @@
 ﻿@namespace EBSApp
 @using EBSApp.Shared
 
+@inject EBSApp.Models.TokenStore TokenStore
+@inject AuthenticationStateProvider AuthStateProvider
+
 <CascadingAuthenticationState>
     <Router AppAssembly="@typeof(App).Assembly" PreferExactMatches="@true">
         <Found Context="routeData">
@@ -17,6 +20,10 @@
 </CascadingAuthenticationState>
 
 @code {
+    protected override async Task OnInitializedAsync()
+    {
+        AuthenticationState authState = await AuthStateProvider.GetAuthenticationStateAsync();
 
-
+        TokenStore.AccessToken = authState.User.Claims.ToList().Find(x => x.Type == "accessToken").Value;
+    }
 }

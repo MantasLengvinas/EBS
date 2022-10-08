@@ -26,17 +26,9 @@ namespace EBSAuthApi.Controllers.Authentication
         public async Task<ActionResult<AuthResponseDto>> AuthenticateUser(UserLogin user, CancellationToken cancelToken)
         {
 
-            string jwt = await _authService.AuthenticateUser(user, cancelToken);
+            AuthResponseDto result = await _authService.LoginUserAsync(user, cancelToken);
 
-            if (jwt is null)
-                return Unauthorized();
-
-            return Ok(
-                new AuthResponseDto
-                {
-                    SessionToken = jwt,
-                    Status = "success"
-                });
+            return Ok(result);
         }
     }
 }

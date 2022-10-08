@@ -21,6 +21,8 @@
     <None Remove="Models\Dtos\Requests\" />
     <None Remove="Models\Dtos\Responses\" />
     <None Remove="Constants\" />
+    <None Remove="Models\Domain\" />
+    <None Remove="Filters\" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="Controllers\" />
@@ -31,5 +33,7 @@
     <Folder Include="Models\Dtos\Requests\" />
     <Folder Include="Models\Dtos\Responses\" />
     <Folder Include="Constants\" />
+    <Folder Include="Models\Domain\" />
+    <Folder Include="Filters\" />
   </ItemGroup>
 </Project>

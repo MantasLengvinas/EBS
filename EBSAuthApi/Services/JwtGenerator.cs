@@ -3,6 +3,7 @@ using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
 using EBSAuthApi.Constants;
 using EBSAuthApi.Models;
+using EBSAuthApi.Models.Domain;
 using Microsoft.IdentityModel.Tokens;
 
 namespace EBSAuthApi.Services
@@ -17,7 +18,7 @@ namespace EBSAuthApi.Services
             _key = key ?? throw new ArgumentNullException(nameof(key));
         }
 
-        private string CreateJwt(List<Claim> claims, string audience, string issuer, int expiration)
+        private string CreateJwt(List<Claim> claims, string audience, string issuer, int expirationTimeInSeconds)
         {
             SecurityTokenDescriptor token = new SecurityTokenDescriptor()
             {
@@ -26,7 +27,7 @@ namespace EBSAuthApi.Services
                 Audience = audience,
                 Issuer = issuer,
                 IssuedAt = DateTime.UtcNow,
-                Expires = DateTime.UtcNow.AddSeconds(expiration),
+                Expires = DateTime.UtcNow.AddSeconds(expirationTimeInSeconds),
                 SigningCredentials = new SigningCredentials(
                     _key,
                     SecurityAlgorithms.RsaSha256
@@ -39,32 +40,21 @@ namespace EBSAuthApi.Services
             return tokenHandler.WriteToken(securityToken);
         }
 
-        public string CreateAccessToken(User user, string audience, string issuer, int expiration)
+        private string CreateRefreshToken(string accessToken, string audience, string issuer, int expiration)
         {
             List<Claim> claims = new List<Claim>();
 
-            claims.Add(new Claim(ClaimsConstants.Id, user.Id));
-            claims.Add(new Claim(ClaimsConstants.Email, user.Email));
-            claims.Add(new Claim(ClaimsConstants.FullName, user.FullName));
-            claims.Add(new Claim(ClaimsConstants.Phone, user.Phone));
-
-            return CreateJwt(claims, audience, issuer, expiration);
-        }
-
-        public string CreateIdToken(string accessToken, string email, string audience, string issuer, int expiration)
-        {
-            List<Claim> claims = new List<Claim>();
-
-            claims.Add(new Claim(ClaimsConstants.Email, email));
             claims.Add(new Claim("accessToken", accessToken));
-            claims.Add(new Claim("refreshToken", CreateRefreshToken(accessToken, audience, issuer, expiration)));
 
             return CreateJwt(claims, audience, issuer, expiration);
         }
 
-        public string CreateRefreshToken(string accessToken, string audience, string issuer, int expiration)
+        public string CreateSessionToken(User user, string audience, string issuer, int expiration)
         {
-            List<Claim> claims = new List<Claim>();
+            List<Claim> claims = new();
+
+            claims.AddRange(user.UserClaims);
+            string accessToken = CreateJwt(user.UserClaims, audience, issuer, expiration);
 
             claims.Add(new Claim("accessToken", accessToken));
 

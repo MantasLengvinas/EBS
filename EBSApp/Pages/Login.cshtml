@@ -48,6 +48,11 @@
                         <div class="p-5">
                             <div id="email-login">
                                 <form class="mb-5" method="post">
+                                    <div class="d-flex justify-content-center align-items-center mb-4">
+                                        <span class="errorMessage">
+                                            @Model.ErrorMessage
+                                        </span>
+                                    </div>
                                     <h3 class="login-title mb-5 ml-5">Prisijunkite</h3>
                                     <div class="form-group m-3">
                                         <label for="email">El. paštas</label>

@@ -1,4 +1,5 @@
-﻿using EBSAuthApi.Options;
+﻿using EBSAuthApi.Filters;
+using EBSAuthApi.Options;
 using EBSAuthApi.Services;
 using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
@@ -11,7 +12,10 @@ var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
 
-builder.Services.AddControllers();
+builder.Services.AddControllers(config =>
+{
+    config.Filters.Add<RequireApiKeyFilter>();
+});
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
@@ -56,6 +60,9 @@ builder.Services.AddScoped<IJwtGenerator, JwtGenerator>(config =>
     return new JwtGenerator(
         config.GetRequiredService<RsaSecurityKey>());
 });
+
+builder.Services.Configure<AuthenticationOptions>(
+    builder.Configuration.GetSection(AuthenticationOptions.Position));
 
 builder.Services.AddScoped<IAuthenticationService, AuthenticationService>(config => {
 

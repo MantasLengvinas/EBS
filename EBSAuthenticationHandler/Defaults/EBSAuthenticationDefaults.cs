@@ -7,8 +7,6 @@ namespace EBSAuthenticationHandler.Defaults
         public const string ApiKeyHeaderName = "X-API-KEY";
 
         internal const string LoginUrl = "Auth/Login";
-        internal const string RetrieveTokensUrl = "Auth/Tokens";
-        internal const string LogoutEndpoint = "Auth/Logout";
     }
 }
 

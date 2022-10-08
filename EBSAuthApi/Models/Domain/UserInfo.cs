@@ -1,11 +1,12 @@
 ﻿using System;
-namespace EBSAuthApi.Models
+namespace EBSAuthApi.Models.Domain
 {
-    public class User
+    public class UserInfo
     {
         public string? Id { get; set; }
         public string? Email { get; set; }
-        public string? FullName { get; set; }
+        public string? Firstname { get; set; }
+        public string? Lastname { get; set; }
         public string? Phone { get; set; }
     }
 }

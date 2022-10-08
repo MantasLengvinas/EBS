@@ -5,10 +5,12 @@ namespace EBSAuthenticationHandler.Models
 {
     internal class AuthResponse
     {
-        [JsonProperty("status")]
-        public string Status { get; set; }
+        [JsonProperty("isSuccess")]
+        public bool IsSuccess { get; set; }
         [JsonProperty("sessionToken")]
-        public string SessionToken { get; set; }
+        public string? SessionToken { get; set; }
+        [JsonProperty("errorMessage")]
+        public string? ErrorMessage { get; set; }
     }
 }
 

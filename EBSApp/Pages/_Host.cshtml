@@ -11,8 +11,7 @@
 @{
     var tokens = new InitialAppState
     {
-        AccessToken = await HttpContext.GetTokenAsync("access_token"),
-        RefreshToken = await HttpContext.GetTokenAsync("refresh_token")
+        AccessToken = await HttpContext.GetTokenAsync("access_token")
     };
 }
 

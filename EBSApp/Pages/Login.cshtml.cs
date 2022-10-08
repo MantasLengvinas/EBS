@@ -11,6 +11,7 @@ namespace EBSApp.Pages
 {
     public class LoginModel : PageModel
     {
+        public string? ErrorMessage = null;
         private readonly IUserAuthService _authService;
 
         public LoginModel(IUserAuthService authService)
@@ -26,10 +27,14 @@ namespace EBSApp.Pages
 
             AuthenticateResult result = await _authService.LoginUser(userLogin);
 
-            if (result.Succeeded)
-                await HttpContext.SignInAsync(CookieAuthenticationDefaults.AuthenticationScheme, result.Ticket.Principal);
+            if (!result.Succeeded)
+            {
+                ErrorMessage = result.Failure.Message;
+                return Page();
+            }
 
-            return Page();
+            await HttpContext.SignInAsync(result.Principal);
+            return Redirect("./");
         }
     }
 }

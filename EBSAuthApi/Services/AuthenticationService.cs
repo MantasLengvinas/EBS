@@ -8,6 +8,8 @@ using Microsoft.Extensions.Options;
 using Microsoft.IdentityModel.Tokens;
 using EBSAuthApi.Models.Dtos.Requests;
 using EBSAuthApi.Models.Dtos.Responses;
+using EBSAuthApi.Models.Domain;
+using EBSAuthApi.Constants;
 
 namespace EBSAuthApi.Services
 {
@@ -23,24 +25,79 @@ namespace EBSAuthApi.Services
             _jwtGenerator = jwtGenerator ?? throw new ArgumentNullException(nameof(jwtGenerator));
         }
 
-        public async Task<string> AuthenticateUser(UserLogin userLogin, CancellationToken cancelToken)
+        private async Task<(bool, string?, User)> AuthenticateUserAsync(UserLogin userLogin)
         {
-            if(userLogin.Email == "Mantas@gmail.com" && userLogin.Password == "testas")
+            User user = new();
+            bool isSuccess = false;
+            string? errorMessage = null;
+
+            // TODO: Call SP
+
+            // temporary now
+
+            if (userLogin.Email == "Mantas@gmail.com" && userLogin.Password == "testas")
             {
-                User user = new()
+                UserInfo userInfo = new()
                 {
                     Email = "Mantas@gmail.com",
-                    FullName = "Mantas Lengvinas",
+                    Firstname = "Mantas",
+                    Lastname = "Lengvinas",
                     Id = "1",
                     Phone = "667987912"
                 };
 
-                string accessToken = _jwtGenerator.CreateAccessToken(user, _options.Audience, _options.Issuer, 3600);
+                List<Claim> userClaims = new();
 
-                return accessToken;
+                userClaims.Add(new Claim(ClaimsConstants.Id, userInfo.Id));
+                userClaims.Add(new Claim(ClaimsConstants.Email, userInfo.Email));
+                userClaims.Add(new Claim(ClaimsConstants.Firstname, userInfo.Firstname));
+                userClaims.Add(new Claim(ClaimsConstants.Lastname, userInfo.Lastname));
+                userClaims.Add(new Claim(ClaimsConstants.Phone, userInfo.Phone));
+
+                user.UserInfo = userInfo;
+                user.UserClaims = userClaims;
+
+                isSuccess = true;
+            }
+            else
+            {
+                errorMessage = "Password is incorrect";
             }
 
-            return null;
+            return (isSuccess, errorMessage, user);
+        }
+
+        public async Task<AuthResponseDto> LoginUserAsync(UserLogin userLogin, CancellationToken cancelToken)
+        {
+            AuthResponseDto response = new();
+
+            if (userLogin == null)
+            {
+                response.ErrorMessage = "No user login information";
+                return response;
+            }
+
+            if(string.IsNullOrEmpty(userLogin.Email) && string.IsNullOrEmpty(userLogin.Password))
+            {
+                response.ErrorMessage = "Missing credentials";
+                return response;
+            }
+
+            (bool authSuccess, string authErrorMessage, User user) = await AuthenticateUserAsync(userLogin);
+
+            if (!authSuccess)
+            {
+                response.ErrorMessage = authErrorMessage;
+                return response;
+            }
+
+            string sessionToken = _jwtGenerator.CreateSessionToken(user, _options.Audience, _options.Issuer, _options.ExpirationTimeInSeconds);
+
+            response.SessionToken = sessionToken;
+            response.IsSuccess = true;
+
+            return response;
+            
         }
     }
 }
