@@ -37,24 +37,6 @@ builder.Services.AddSingleton(provider =>
 
 // Scoped services
 
-builder.Services.AddAuthentication(options =>
-{
-    options.DefaultScheme = JwtBearerDefaults.AuthenticationScheme;
-})
-.AddJwtBearer(options =>
-{
-    options.RequireHttpsMetadata = false;
-    options.SaveToken = true;
-    options.TokenValidationParameters = new TokenValidationParameters()
-    {
-        ValidateIssuer = true,
-        ValidateAudience = true,
-        ValidAudience = builder.Configuration["Jwt:Audience"],
-        ValidIssuer = builder.Configuration["Jwt:Issuer"]
-    };
-
-});
-
 builder.Services.AddScoped<IJwtGenerator, JwtGenerator>(config =>
 {
     return new JwtGenerator(
@@ -84,9 +66,6 @@ if (app.Environment.IsDevelopment())
 }
 
 app.UseHttpsRedirection();
-
-app.UseAuthentication();
-app.UseAuthorization();
 
 app.MapControllers();
 

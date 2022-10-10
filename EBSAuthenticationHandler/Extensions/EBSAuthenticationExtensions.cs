@@ -1,6 +1,6 @@
 ﻿using System;
 using EBSAuthenticationHandler.Defaults;
-using EBSAuthenticationHandler.Handlers;
+using EBSAuthenticationHandler.Events;
 using EBSAuthenticationHandler.Options;
 using EBSAuthenticationHandler.Services;
 using Microsoft.AspNetCore.Authentication;
@@ -34,7 +34,7 @@ namespace EBSAuthenticationHandler.Extensions
         {
             return services
                 .AddUserAuthService(ebsauthOptions)
-                .AddTransient<EBSAuthHandler>()
+                .AddTransient<EBSAuthCookieEvents>()
                 .AddAuthentication(options =>
                 {
                     options.DefaultScheme = CookieAuthenticationDefaults.AuthenticationScheme;
@@ -47,7 +47,7 @@ namespace EBSAuthenticationHandler.Extensions
                     options.Cookie.SecurePolicy = CookieSecurePolicy.Always;
                     options.Cookie.IsEssential = true;
                     options.SlidingExpiration = false;
-                    options.EventsType = typeof(EBSAuthHandler);
+                    options.EventsType = typeof(EBSAuthCookieEvents);
                 });
         }
 
@@ -58,7 +58,7 @@ namespace EBSAuthenticationHandler.Extensions
         {
             return services
                 .AddUserAuthService(ebsauthOptions)
-                .AddTransient<EBSAuthHandler>()
+                .AddTransient<EBSAuthCookieEvents>()
                 .AddAuthentication(options =>
                 {
                     options.DefaultScheme = CookieAuthenticationDefaults.AuthenticationScheme;
@@ -76,7 +76,7 @@ namespace EBSAuthenticationHandler.Extensions
         {
             return services
                 .AddUserAuthService(ebsauthOptions)
-                .AddTransient<EBSAuthHandler>()
+                .AddTransient<EBSAuthCookieEvents>()
                 .AddAuthentication(authOptions)
                 .AddCookie(cookieOptions);
         }

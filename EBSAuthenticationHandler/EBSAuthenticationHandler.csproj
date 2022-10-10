@@ -13,18 +13,17 @@
     <None Remove="Microsoft.AspNetCore.Authentication.Cookies" />
     <None Remove="System.IdentityModel.Tokens.Jwt" />
     <None Remove="Options\" />
-    <None Remove="Handlers\" />
     <None Remove="Defaults\" />
     <None Remove="Models\" />
     <None Remove="Newtonsoft.Json" />
     <None Remove="Constants\" />
     <None Remove="Helpers\" />
     <None Remove="Services\" />
+    <None Remove="Handler\" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="Extensions\" />
     <Folder Include="Options\" />
-    <Folder Include="Handlers\" />
     <Folder Include="Defaults\" />
     <Folder Include="Models\" />
     <Folder Include="Constants\" />

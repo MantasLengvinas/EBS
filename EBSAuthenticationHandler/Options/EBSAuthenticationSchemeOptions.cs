@@ -3,7 +3,7 @@ using Microsoft.AspNetCore.Authentication;
 
 namespace EBSAuthenticationHandler.Options
 {
-    public class EBSAuthenticationSchemeOptions : AuthenticationOptions
+    public class EBSAuthenticationSchemeOptions : AuthenticationSchemeOptions
     {
         public string AuthApiUrl { get; set; }
 

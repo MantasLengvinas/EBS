@@ -20,14 +20,14 @@ using Microsoft.Net.Http.Headers;
 using Microsoft.AspNetCore.Http.Features.Authentication;
 using Microsoft.AspNetCore.Authentication.Cookies;
 
-namespace EBSAuthenticationHandler.Handlers
+namespace EBSAuthenticationHandler.Events
 {
-    public class EBSAuthHandler : CookieAuthenticationEvents
+    public class EBSAuthCookieEvents : CookieAuthenticationEvents
     {
         private const string TicketExpirationTime = nameof(TicketExpirationTime);
         private readonly EBSAuthenticationSchemeOptions _options;
 
-        public EBSAuthHandler(
+        public EBSAuthCookieEvents(
             IOptions<EBSAuthenticationSchemeOptions> options)
         {
             _options = options.Value ?? throw new ArgumentNullException(nameof(options));
@@ -37,7 +37,7 @@ namespace EBSAuthenticationHandler.Handlers
         {
             try
             {
-                Claim expClaim = context.Principal.Claims.ToList().Find(x => x.Type == "exp");
+                Claim expClaim = context.Principal.Claims.FirstOrDefault(x => x.Type == "exp");
 
                 context.Properties.SetString(
                     TicketExpirationTime,
@@ -71,10 +71,17 @@ namespace EBSAuthenticationHandler.Handlers
             await base.ValidatePrincipal(context);
         }
 
+        public override Task RedirectToReturnUrl(RedirectContext<CookieAuthenticationOptions> context)
+        {
+            return base.RedirectToReturnUrl(context);
+        }
+
         private static async Task RejectPrincipalAsync(CookieValidatePrincipalContext context)
         {
             context.RejectPrincipal();
-            await context.HttpContext.SignOutAsync();
+            AuthenticationProperties properties = new();
+            properties.RedirectUri = "./login?redirectUri=/home";
+            await context.HttpContext.SignOutAsync(properties);
         }
 
         //private async Task<(AuthTokensResponse, HandleRequestResult)> GetTokensAsync(string sessionToken)
