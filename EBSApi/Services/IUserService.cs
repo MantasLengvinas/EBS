@@ -1,8 +1,8 @@
 ﻿using EBSApi.Models;
 
-namespace EBSApi.Repositories
+namespace EBSApi.Services
 {
-    public interface IUserRepository
+    public interface IUserService
     {
         public Task<IEnumerable<User>> GetAllUsers();
         public Task<User> GetUser(int id);

@@ -1,6 +1,5 @@
 ﻿using EBSApi.Models;
-using EBSApi.Repositories;
-using Microsoft.AspNetCore.Http;
+using EBSApi.Services;
 using Microsoft.AspNetCore.Mvc;
 
 namespace EBSApi.Controllers
@@ -9,26 +8,28 @@ namespace EBSApi.Controllers
     [ApiController]
     public class UserController : ControllerBase
     {
-        private readonly IUserRepository _userRepository;
+        private readonly IUserService _userService;
 
-        public UserController(IUserRepository userRepository)
+        public UserController(IUserService userService)
         {
-            _userRepository = userRepository;
+            _userService = userService;
         }
 
         [HttpGet]
-        public async Task<IActionResult> GetUsers()
+        public async Task<IActionResult> GetUsers(CancellationToken cancellationToken)
         {
-            IEnumerable<User> users = await _userRepository.GetAllUsers();
-            if (users == null || users.Count() == 0)
+            IEnumerable<User> users = await _userService.GetAllUsers();
+            if (users == null || !users.Any())
                 return NotFound();
             return Ok(users);
         }
 
         [HttpGet("{id}")]
-        public async Task<IActionResult> GetUser(int id)
+        public async Task<IActionResult> GetUser(int id, CancellationToken cancellationToken)
         {
-            User user = await _userRepository.GetUser(id);
+            User user = await _userService.GetUser(id);
+            if (user == null)
+                return NotFound();
             return Ok(user);
         }
     }
