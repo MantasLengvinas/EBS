@@ -79,3 +79,8 @@ input.form-control {
 .hidden {
     display: none;
 }
+
+.errorMessage {
+    font-weight: bold;
+    color: #c40a0a;
+}

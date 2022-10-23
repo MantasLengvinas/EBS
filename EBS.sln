@@ -7,6 +7,10 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "EBSApi", "EBSApi\EBSApi.csp
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "EBSApp", "EBSApp\EBSApp.csproj", "{777E3679-2794-4A92-9942-4DC81D846605}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "EBSAuthenticationHandler", "EBSAuthenticationHandler\EBSAuthenticationHandler.csproj", "{6D0535A6-7BC3-4481-B4BE-DCA32CA65047}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "EBSAuthApi", "EBSAuthApi\EBSAuthApi.csproj", "{302E28AD-8AE1-4E0F-86FA-0D31ECAC8092}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -21,6 +25,14 @@ Global
 		{777E3679-2794-4A92-9942-4DC81D846605}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{777E3679-2794-4A92-9942-4DC81D846605}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{777E3679-2794-4A92-9942-4DC81D846605}.Release|Any CPU.Build.0 = Release|Any CPU
+		{6D0535A6-7BC3-4481-B4BE-DCA32CA65047}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{6D0535A6-7BC3-4481-B4BE-DCA32CA65047}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{6D0535A6-7BC3-4481-B4BE-DCA32CA65047}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{6D0535A6-7BC3-4481-B4BE-DCA32CA65047}.Release|Any CPU.Build.0 = Release|Any CPU
+		{302E28AD-8AE1-4E0F-86FA-0D31ECAC8092}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{302E28AD-8AE1-4E0F-86FA-0D31ECAC8092}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{302E28AD-8AE1-4E0F-86FA-0D31ECAC8092}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{302E28AD-8AE1-4E0F-86FA-0D31ECAC8092}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

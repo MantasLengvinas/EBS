@@ -1,3 +1,9 @@
 ﻿@page "/"
 
-<h1>home</h1>
+<AuthorizeView>
+    <h1>Hello, @context.User.Identity.Name</h1>
+</AuthorizeView>
+
+
+
+

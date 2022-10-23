@@ -1,0 +1,22 @@
+﻿@inherits LayoutComponentBase
+
+@inject AuthenticationStateProvider authStateProvider
+@inject NavigationManager navigation
+
+<AuthorizeView>
+    <Authorized>
+        @Body
+    </Authorized>
+</AuthorizeView>
+
+@code {
+    protected override async Task OnInitializedAsync()
+    {
+        AuthenticationState authState = await authStateProvider.GetAuthenticationStateAsync();
+
+        if (!authState.User.Identity.IsAuthenticated)
+        {
+            navigation.NavigateTo("login", true);
+        }
+    }
+}

@@ -4,6 +4,7 @@
     <TargetFramework>net6.0</TargetFramework>
     <Nullable>enable</Nullable>
     <ImplicitUsings>enable</ImplicitUsings>
+    <UserSecretsId>ebd9da8c-b4d6-444b-9d05-63fcdef3e9c0</UserSecretsId>
   </PropertyGroup>
 
   <ItemGroup>
@@ -15,5 +16,42 @@
     <Folder Include="wwwroot\images\" />
     <Folder Include="wwwroot\images\logo\" />
     <Folder Include="wwwroot\scripts\" />
+    <Folder Include="Auth\" />
+    <Folder Include="Models\" />
+    <Folder Include="Models\Authentication\" />
+    <Folder Include="Services\" />
+    <Folder Include="Services\General\" />
+    <Folder Include="Models\General\" />
+    <Folder Include="Models\Dtos\" />
+    <Folder Include="Models\Dtos\Responses\" />
+    <Folder Include="Services\Authentication\" />
+    <Folder Include="Options\" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Remove="Serilog" />
+    <None Remove="Serilog.Sinks.Console" />
+    <None Remove="Serilog.AspNetCore" />
+    <None Remove="Auth\" />
+    <None Remove="Models\" />
+    <None Remove="Models\Authentication\" />
+    <None Remove="Services\" />
+    <None Remove="Services\General\" />
+    <None Remove="Models\General\" />
+    <None Remove="Newtonsoft.Json" />
+    <None Remove="Models\Dtos\" />
+    <None Remove="Models\Dtos\Responses\" />
+    <None Remove="Services\Authentication\" />
+    <None Remove="Options\" />
+  </ItemGroup>
+  <ItemGroup>
+    <PackageReference Include="Serilog" Version="2.12.0" />
+    <PackageReference Include="Serilog.Sinks.Console" Version="4.1.0" />
+    <PackageReference Include="Serilog.AspNetCore" Version="6.0.1" />
+    <PackageReference Include="Newtonsoft.Json" Version="13.0.1" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\EBSAuthenticationHandler\EBSAuthenticationHandler.csproj">
+      <GlobalPropertiesToRemove></GlobalPropertiesToRemove>
+    </ProjectReference>
   </ItemGroup>
 </Project>
