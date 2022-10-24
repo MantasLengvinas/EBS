@@ -1,5 +1,5 @@
 ﻿using EBSApi.Models;
-using EBSApi.Services;
+using EBSApi.Data;
 using Microsoft.AspNetCore.Mvc;
 
 namespace EBSApi.Controllers
@@ -8,26 +8,26 @@ namespace EBSApi.Controllers
     [ApiController]
     public class UserController : ControllerBase
     {
-        private readonly IUserService _userService;
+        private readonly IUserQueries _userQueries;
 
-        public UserController(IUserService userService)
+        public UserController(IUserQueries userQueries)
         {
-            _userService = userService;
+            _userQueries = userQueries;
         }
 
         [HttpGet]
-        public async Task<IActionResult> GetUsers(CancellationToken cancellationToken)
+        public async Task<IActionResult> GetUsersAsync(CancellationToken cancellationToken)
         {
-            IEnumerable<User> users = await _userService.GetAllUsers();
+            IEnumerable<User> users = await _userQueries.GetAllUsersAsync();
             if (users == null || !users.Any())
                 return NotFound();
             return Ok(users);
         }
 
         [HttpGet("{id}")]
-        public async Task<IActionResult> GetUser(int id, CancellationToken cancellationToken)
+        public async Task<IActionResult> GetUserAsync(int id, CancellationToken cancellationToken)
         {
-            User user = await _userService.GetUser(id);
+            User user = await _userQueries.GetUserAsync(id);
             if (user == null)
                 return NotFound();
             return Ok(user);

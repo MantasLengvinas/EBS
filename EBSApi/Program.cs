@@ -1,5 +1,5 @@
 ﻿using EBSApi.Utility;
-using EBSApi.Services;
+using EBSApi.Data;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -10,7 +10,8 @@ builder.Services.AddSingleton(config =>
     return new SqlUtility(connectionString);
 });
 
-builder.Services.AddScoped<IUserService, UserService>();
+builder.Services.AddScoped<IUserQueries, UserQueries>();
+builder.Services.AddScoped<IAddressQueries, AddressQueries>();
 
 builder.Services.AddControllers();
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
