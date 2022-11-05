@@ -5,9 +5,11 @@ namespace EBSAuthApi.Constants
     {
         public const string Id = "id";
         public const string Email = "email";
-        public const string Firstname = "firstname";
-        public const string Lastname = "lastname";
-        public const string Phone = "phone";
+        public const string FullName = "fullName";
+        public const string Balance = "balance";
+        public const string Active = "active";
+        public const string Business = "business";
+        public const string Completed = "completed";
     }
 }
 

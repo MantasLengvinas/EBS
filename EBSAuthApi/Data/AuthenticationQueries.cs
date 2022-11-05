@@ -1,0 +1,66 @@
+﻿using System;
+using System.Data;
+using Dapper;
+using EBSAuthApi.Models.Domain;
+using EBSAuthApi.Utility;
+
+namespace EBSAuthApi.Data
+{
+    public class AuthenticationQueries : IAuthenticationQueries
+    {
+        private readonly SqlUtility _sqlUtility;
+
+        public AuthenticationQueries(SqlUtility sqlUtility)
+        {
+            _sqlUtility = sqlUtility ?? throw new ArgumentNullException(nameof(sqlUtility));
+        }
+
+        public async Task<(int, UserInfo?)> LoginUser(string email, string password, CancellationToken cancelToken)
+        {
+            DynamicParameters parameters = new();
+
+            parameters.Add("@return_value", dbType: DbType.Int32, direction: ParameterDirection.ReturnValue);
+            parameters.Add("@email", email, dbType: DbType.String, direction: ParameterDirection.Input);
+            parameters.Add("@password", password, dbType: DbType.String, direction: ParameterDirection.Input);
+
+            using (IDbConnection connection = _sqlUtility.CreateConnection())
+            {
+                UserInfo? user = (await connection.
+                    QueryAsync<UserInfo>("AUTH.login",
+                                         parameters,
+                                         commandType: CommandType.StoredProcedure)).FirstOrDefault();
+
+                int returnValue = parameters.Get<int>("@return_value");
+
+                return (returnValue, user);
+            }
+        }
+
+        public async Task<(int, int)> RegisterUser(string email, string password, string salt, CancellationToken cancelToken)
+        {
+            DynamicParameters parameters = new();
+
+            parameters.Add("@return_value", dbType: DbType.Int32, direction: ParameterDirection.ReturnValue);
+            parameters.Add("@id", dbType: DbType.Int32, direction: ParameterDirection.Output);
+            parameters.Add("@email", email, dbType: DbType.String, direction: ParameterDirection.Input);
+            parameters.Add("@password", password, dbType: DbType.String, direction: ParameterDirection.Input);
+            parameters.Add("@salt", salt, dbType: DbType.String, direction: ParameterDirection.Input);
+            parameters.Add("@action", "create", dbType: DbType.String, direction: ParameterDirection.Input);
+
+
+            using (IDbConnection connection = _sqlUtility.CreateConnection())
+            {
+                await connection
+                    .QueryAsync("AUTH.registerClient",
+                                parameters,
+                                commandType: CommandType.StoredProcedure);
+
+                int returnValue = parameters.Get<int>("@return_value");
+                int id = parameters.Get<int>("@id");
+
+                return (returnValue, id);
+            }
+        }
+    }
+}
+
