@@ -22,12 +22,6 @@ namespace EBSAuthApi.Controllers.Authentication
             _authService = authenticationService ?? throw new ArgumentNullException(nameof(authenticationService));
         }
 
-        [HttpGet("salt")]
-        public async Task<IActionResult> GetClientSalt(string email, CancellationToken cancelToken)
-        {
-            return Ok();
-        }
-
         [HttpPost("login")]
         public async Task<IActionResult> AuthenticateUser(UserLogin user, CancellationToken cancelToken)
         {
@@ -43,6 +37,17 @@ namespace EBSAuthApi.Controllers.Authentication
             AuthResponseDto result = await _authService.RegisterClientAsync(user, cancelToken);
 
             return Ok(result);
+        }
+
+        [HttpPost("complete")]
+        public async Task<IActionResult> CompleteRegistration(CompleteRegistration userInfo, CancellationToken cancelToken)
+        {
+            bool result = await _authService.CompleteRegistrationAsync(userInfo, cancelToken);
+
+            if (result == false)
+                return BadRequest();
+
+            return Ok();
         }
     }
 }

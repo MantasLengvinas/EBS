@@ -3,6 +3,7 @@ namespace EBSAuthApi.Models.Domain
 {
     public class UserInfo
     {
+        public int ClientId { get; set; }
         public int Id { get; set; }
         public string Email { get; set; }
         public string FullName { get; set; }

@@ -8,7 +8,6 @@ namespace EBSAuthenticationHandler.Defaults
 
         internal const string LoginUrl = "Auth/Login";
         internal const string RegisterUrl = "Auth/Register";
-        internal const string GetSaltUrl = "Auth/Salt";
         internal const string CompleteRegistrationUrl = "Auth/Complete";
     }
 }

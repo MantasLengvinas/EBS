@@ -77,7 +77,7 @@ namespace EBSAuthenticationHandler.Services
                     return AuthenticateResult.Fail("Token is invalid");
 
             }
-            catch(Exception e)
+            catch(Exception)
             {
             }
 
@@ -130,7 +130,7 @@ namespace EBSAuthenticationHandler.Services
                     return AuthenticateResult.Fail("Token is invalid");
 
             }
-            catch (Exception e)
+            catch (Exception)
             {
             }
 
@@ -140,6 +140,32 @@ namespace EBSAuthenticationHandler.Services
             AuthenticationTicket ticket = new AuthenticationTicket(principal, authProperties, EBSAuthenticationDefaults.AuthenticationScheme);
 
             return AuthenticateResult.Success(ticket);
+        }
+
+        public async Task<bool> CompleteUserRegistration(object userInfo)
+        {
+
+            if (userInfo == null)
+            {
+                return false;
+            }
+
+            HttpRequestMessage message = new HttpRequestMessage(HttpMethod.Post, EBSAuthenticationDefaults.CompleteRegistrationUrl);
+            message.Content = new StringContent(JsonConvert.SerializeObject(userInfo), Encoding.UTF8, "application/json");
+
+            try
+            {
+                HttpResponseMessage response = await _client.SendAsync(message);
+
+                if (!response.IsSuccessStatusCode)
+                    return false;
+
+                return true;
+            }
+            catch (Exception)
+            {
+                return false;
+            }
         }
 
         private ClaimsPrincipal? ValidateAuthResponse(AuthResponse? authResponse)
