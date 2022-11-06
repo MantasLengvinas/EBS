@@ -1,15 +1,20 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-# Visual Studio Version 16
-VisualStudioVersion = 25.0.1703.3
+# Visual Studio Version 17
+VisualStudioVersion = 17.1.32328.378
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "EBSApi", "EBSApi\EBSApi.csproj", "{469289E9-4B7E-4F29-B81F-D31EE534C221}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "EBSApi", "EBSApi\EBSApi.csproj", "{469289E9-4B7E-4F29-B81F-D31EE534C221}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "EBSApp", "EBSApp\EBSApp.csproj", "{777E3679-2794-4A92-9942-4DC81D846605}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "EBSApp", "EBSApp\EBSApp.csproj", "{777E3679-2794-4A92-9942-4DC81D846605}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "EBSAuthenticationHandler", "EBSAuthenticationHandler\EBSAuthenticationHandler.csproj", "{6D0535A6-7BC3-4481-B4BE-DCA32CA65047}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "EBSAuthenticationHandler", "EBSAuthenticationHandler\EBSAuthenticationHandler.csproj", "{6D0535A6-7BC3-4481-B4BE-DCA32CA65047}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "EBSAuthApi", "EBSAuthApi\EBSAuthApi.csproj", "{302E28AD-8AE1-4E0F-86FA-0D31ECAC8092}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "EBSAuthApi", "EBSAuthApi\EBSAuthApi.csproj", "{302E28AD-8AE1-4E0F-86FA-0D31ECAC8092}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{E93FC24B-F9BA-426C-8B4B-C0677ACF310E}"
+	ProjectSection(SolutionItems) = preProject
+		.editorconfig = .editorconfig
+	EndProjectSection
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

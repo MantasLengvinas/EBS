@@ -1,12 +1,20 @@
-﻿using System.Security.Cryptography;
-using System.Text;
-using Microsoft.AspNetCore.Authentication.JwtBearer;
-using Microsoft.Extensions.Options;
-using Microsoft.IdentityModel.Tokens;
+﻿using EBSApi.Utility;
+using EBSApi.Data;
 
 var builder = WebApplication.CreateBuilder(args);
 
 // Common services
+builder.Services.AddSingleton(config =>
+{
+    string connectionString = builder.Configuration.GetConnectionString("ConnectionString");
+    return new SqlUtility(connectionString);
+});
+
+builder.Services.AddScoped<IUserQueries, UserQueries>();
+builder.Services.AddScoped<IAddressQueries, AddressQueries>();
+builder.Services.AddScoped<IProviderQueries, ProviderQueries>();
+builder.Services.AddScoped<IUsageQueries, UsageQueries>();
+builder.Services.AddScoped<ITariffQueries, TariffQueries>();
 
 builder.Services.AddControllers();
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
@@ -23,8 +31,6 @@ if (app.Environment.IsDevelopment())
 }
 
 app.UseHttpsRedirection();
-
-app.UseAuthorization();
 
 app.MapControllers();
 
