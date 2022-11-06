@@ -14,6 +14,7 @@ builder.Services.AddScoped<IUserQueries, UserQueries>();
 builder.Services.AddScoped<IAddressQueries, AddressQueries>();
 builder.Services.AddScoped<IProviderQueries, ProviderQueries>();
 builder.Services.AddScoped<IUsageQueries, UsageQueries>();
+builder.Services.AddScoped<ITariffQueries, TariffQueries>();
 
 builder.Services.AddControllers();
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
