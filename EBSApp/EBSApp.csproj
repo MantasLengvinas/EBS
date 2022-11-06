@@ -24,8 +24,9 @@
     <Folder Include="Models\General\" />
     <Folder Include="Models\Dtos\" />
     <Folder Include="Models\Dtos\Responses\" />
-    <Folder Include="Services\Authentication\" />
     <Folder Include="Options\" />
+    <Folder Include="Shared\Components\" />
+    <Folder Include="Pages\ClientView\" />
   </ItemGroup>
   <ItemGroup>
     <None Remove="Serilog" />
@@ -40,8 +41,9 @@
     <None Remove="Newtonsoft.Json" />
     <None Remove="Models\Dtos\" />
     <None Remove="Models\Dtos\Responses\" />
-    <None Remove="Services\Authentication\" />
     <None Remove="Options\" />
+    <None Remove="Shared\Components\" />
+    <None Remove="Pages\ClientView\" />
   </ItemGroup>
   <ItemGroup>
     <PackageReference Include="Serilog" Version="2.12.0" />

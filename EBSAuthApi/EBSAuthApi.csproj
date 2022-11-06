@@ -9,6 +9,8 @@
   <ItemGroup>
     <PackageReference Include="Swashbuckle.AspNetCore" Version="6.2.3" />
     <PackageReference Include="Microsoft.AspNetCore.Authentication.JwtBearer" Version="6.0.9" />
+    <PackageReference Include="Dapper" Version="2.0.123" />
+    <PackageReference Include="System.Data.SqlClient" Version="4.8.4" />
   </ItemGroup>
 
   <ItemGroup>
@@ -23,6 +25,11 @@
     <None Remove="Constants\" />
     <None Remove="Models\Domain\" />
     <None Remove="Filters\" />
+    <None Remove="Dapper" />
+    <None Remove="Data\" />
+    <None Remove="Utility\" />
+    <None Remove="System.Data.SqlClient" />
+    <None Remove="Helpers\" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="Controllers\" />
@@ -35,5 +42,8 @@
     <Folder Include="Constants\" />
     <Folder Include="Models\Domain\" />
     <Folder Include="Filters\" />
+    <Folder Include="Data\" />
+    <Folder Include="Utility\" />
+    <Folder Include="Helpers\" />
   </ItemGroup>
 </Project>

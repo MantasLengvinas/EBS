@@ -10,6 +10,10 @@ using EBSAuthApi.Models.Dtos.Requests;
 using EBSAuthApi.Models.Dtos.Responses;
 using EBSAuthApi.Models.Domain;
 using EBSAuthApi.Constants;
+using Dapper;
+using EBSAuthApi.Data;
+using EBSAuthApi.Helpers;
+using System.Security.Cryptography;
 
 namespace EBSAuthApi.Services
 {
@@ -19,52 +23,53 @@ namespace EBSAuthApi.Services
 
         private readonly IJwtGenerator _jwtGenerator;
 
-        public AuthenticationService(IOptions<AuthenticationOptions> options, IJwtGenerator jwtGenerator)
+        private readonly IAuthenticationQueries _authQueries;
+
+        public AuthenticationService(IOptions<AuthenticationOptions> options, IJwtGenerator jwtGenerator, IAuthenticationQueries authQueries)
         {
             _options = options.Value ?? throw new ArgumentNullException(nameof(options));
             _jwtGenerator = jwtGenerator ?? throw new ArgumentNullException(nameof(jwtGenerator));
+            _authQueries = authQueries ?? throw new ArgumentNullException(nameof(authQueries));
         }
 
-        private async Task<(bool, string?, User)> AuthenticateUserAsync(UserLogin userLogin)
+        private async Task<(bool, string?, User?)> AuthenticateUserAsync(UserInfo userInfo)
         {
             User user = new();
             bool isSuccess = false;
             string? errorMessage = null;
+            List<Claim> userClaims = new();
 
-            // TODO: Call SP
-
-            // temporary now
-
-            if (userLogin.Email == "Mantas@gmail.com" && userLogin.Password == "testas")
+            try
             {
-                UserInfo userInfo = new()
+                if (!userInfo.Completed)
                 {
-                    Email = "Mantas@gmail.com",
-                    Firstname = "Mantas",
-                    Lastname = "Lengvinas",
-                    Id = "1",
-                    Phone = "667987912"
-                };
-
-                List<Claim> userClaims = new();
-
-                userClaims.Add(new Claim(ClaimsConstants.Id, userInfo.Id));
-                userClaims.Add(new Claim(ClaimsConstants.Email, userInfo.Email));
-                userClaims.Add(new Claim(ClaimsConstants.Firstname, userInfo.Firstname));
-                userClaims.Add(new Claim(ClaimsConstants.Lastname, userInfo.Lastname));
-                userClaims.Add(new Claim(ClaimsConstants.Phone, userInfo.Phone));
-
-                user.UserInfo = userInfo;
-                user.UserClaims = userClaims;
+                    userClaims.Add(new Claim(ClaimsConstants.Id, userInfo.Id.ToString()));
+                    userClaims.Add(new Claim(ClaimsConstants.Email, userInfo.Email));
+                    userClaims.Add(new Claim(ClaimsConstants.Completed, userInfo.Completed.ToString()));
+                }
+                else
+                {
+                    userClaims.Add(new Claim(ClaimsConstants.Id, userInfo.Id.ToString()));
+                    userClaims.Add(new Claim(ClaimsConstants.Email, userInfo.Email));
+                    userClaims.Add(new Claim(ClaimsConstants.FullName, userInfo.FullName));
+                    userClaims.Add(new Claim(ClaimsConstants.Balance, userInfo.Balance.ToString()));
+                    userClaims.Add(new Claim(ClaimsConstants.Active, userInfo.Active.ToString()));
+                    userClaims.Add(new Claim(ClaimsConstants.Business, userInfo.Business.ToString()));
+                    userClaims.Add(new Claim(ClaimsConstants.Completed, userInfo.Completed.ToString()));
+                }
 
                 isSuccess = true;
             }
-            else
+            catch(Exception)
             {
-                errorMessage = "Password is incorrect";
+                errorMessage = "Failed to get user info";
+                return (isSuccess, errorMessage, null);
             }
 
-            return (isSuccess, errorMessage, user);
+            user.UserClaims = userClaims;
+            user.UserInfo = userInfo;
+
+            return (isSuccess, null, user);
         }
 
         public async Task<AuthResponseDto> LoginUserAsync(UserLogin userLogin, CancellationToken cancelToken)
@@ -83,7 +88,35 @@ namespace EBSAuthApi.Services
                 return response;
             }
 
-            (bool authSuccess, string authErrorMessage, User user) = await AuthenticateUserAsync(userLogin);
+            (int passwordReturnValue, string? savedPassword) = await _authQueries.GetPassword(userLogin.Email, cancelToken);
+
+            if(passwordReturnValue != 0)
+            {
+                response.ErrorMessage = "Failed to authenticate";
+                return response;
+            }
+
+            if(savedPassword == null)
+            {
+                response.ErrorMessage = "Failed to retrieve password";
+                return response;
+            }
+
+            if(!PasswordHelper.ValidatePassword(userLogin.Password, savedPassword))
+            {
+                response.ErrorMessage = "Password is incorrect";
+                return response;
+            }
+
+            (int returnValue, UserInfo? userInfo) = await _authQueries.LoginUser(userLogin.Email, userLogin.Password, cancelToken);
+
+            if(returnValue != 0)
+            {
+                response.ErrorMessage = SQLStatusCodeHelper.HandleStatusCode(returnValue, "login");
+                return response;
+            }
+
+            (bool authSuccess, string? authErrorMessage, User? user) = await AuthenticateUserAsync(userInfo);
 
             if (!authSuccess)
             {
@@ -98,6 +131,52 @@ namespace EBSAuthApi.Services
 
             return response;
             
+        }
+
+        public async Task<AuthResponseDto> RegisterClientAsync(ClientRegister clientRegister, CancellationToken cancelToken)
+        {
+            AuthResponseDto response = new();
+
+            if (clientRegister == null)
+            {
+                response.ErrorMessage = "No user login information";
+                return response;
+            }
+
+            if (string.IsNullOrEmpty(clientRegister.Email) && string.IsNullOrEmpty(clientRegister.Password))
+            {
+                response.ErrorMessage = "Missing credentials";
+                return response;
+            }
+
+            clientRegister.Password = PasswordHelper.HashPassword(clientRegister.Password);
+
+            (int returnValue, int id) = await _authQueries.RegisterUser(clientRegister.Email, clientRegister.Password, cancelToken);
+
+            if(returnValue != 0)
+            {
+                response.ErrorMessage = "Registration failed";
+                return response;
+            }
+
+            UserInfo userInfo = new();
+            userInfo.Id = id;
+            userInfo.Email = clientRegister.Email;
+
+            (bool authSuccess, string? authErrorMessage, User? user) = await AuthenticateUserAsync(userInfo);
+
+            if (!authSuccess)
+            {
+                response.ErrorMessage = authErrorMessage;
+                return response;
+            }
+
+            string sessionToken = _jwtGenerator.CreateSessionToken(user, _options.Audience, _options.Issuer, _options.ExpirationTimeInSeconds);
+
+            response.SessionToken = sessionToken;
+            response.IsSuccess = true;
+
+            return response;
         }
     }
 }

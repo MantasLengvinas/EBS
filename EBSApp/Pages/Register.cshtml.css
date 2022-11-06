@@ -79,3 +79,11 @@ input.form-control {
 .hidden {
     display: none;
 }
+
+.password-error-list {
+    list-style: none;
+}
+
+.password-error-item {
+    color: #c40a0a;
+}

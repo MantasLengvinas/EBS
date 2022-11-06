@@ -1,21 +1,21 @@
 ﻿using System;
-using System.Security.Claims;
+using System.Text;
 using EBSApp.Models.Authentication;
+using EBSApp.Services.General;
 using EBSAuthenticationHandler.Helpers;
 using EBSAuthenticationHandler.Services;
 using Microsoft.AspNetCore.Authentication;
-using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 
 namespace EBSApp.Pages
 {
-    public class LoginModel : PageModel
+    public class RegisterModel : PageModel
     {
         public string? ErrorMessage = null;
         private readonly IUserAuthService _authService;
 
-        public LoginModel(IUserAuthService authService)
+        public RegisterModel(IUserAuthService authService)
         {
             _authService = authService;
         }
@@ -28,7 +28,7 @@ namespace EBSApp.Pages
 
             userLogin.Password = PasswordHelper.EncodePassword(userLogin.Password);
 
-            AuthenticateResult result = await _authService.LoginUser(userLogin);
+            AuthenticateResult result = await _authService.RegisterClient(userLogin);
 
             if (!result.Succeeded)
             {
@@ -37,7 +37,7 @@ namespace EBSApp.Pages
             }
 
             await HttpContext.SignInAsync(result.Principal);
-            return Redirect("./");
+            return Redirect("./clientsetup");
         }
     }
 }

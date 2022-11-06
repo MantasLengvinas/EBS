@@ -1,0 +1,21 @@
+﻿<div class="topmenu container-fluid">
+        <div class="row">
+            <div class="col-md-2">
+                <h1>LOGO</h1>
+            </div>
+            <div class="col-md-6">
+                <ul class="top-menu-items">
+                    <li class="active"><NavLink href="./">Deklaravimas ir mokėjimas</NavLink></li>
+                    <li><NavLink>Istorija</NavLink></li>
+                    <li><NavLink>Ataskaitos</NavLink></li>
+                </ul>
+            </div>
+            <div class="col-md-4 d-flex justify-content-end align-items-center">
+                <AuthorizeView>
+                    @context.User.Identity.Name
+                </AuthorizeView>
+
+            </div>
+        </div>
+</div>
+
