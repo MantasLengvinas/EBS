@@ -1,10 +1,11 @@
 ﻿using EBSApi.Models;
+using EBSApi.Models.Dtos;
 
 namespace EBSApi.Data
 {
     public interface IUserQueries
     {
-        public Task<IEnumerable<User>> GetAllUsersAsync();
-        public Task<User> GetUserAsync(int id);
+        public Task<Response<IEnumerable<User>>> GetAllUsersAsync();
+        public Task<Response<User>> GetUserAsync(int id);
     }
 }

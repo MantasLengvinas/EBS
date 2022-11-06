@@ -1,6 +1,7 @@
 ﻿using EBSApi.Models;
 using EBSApi.Data;
 using Microsoft.AspNetCore.Mvc;
+using EBSApi.Models.Dtos;
 
 namespace EBSApi.Controllers
 {
@@ -18,19 +19,19 @@ namespace EBSApi.Controllers
         [HttpGet]
         public async Task<IActionResult> GetUsersAsync(CancellationToken cancellationToken)
         {
-            IEnumerable<User> users = await _userQueries.GetAllUsersAsync();
-            if (users == null || !users.Any())
+            Response<IEnumerable<User>> response = await _userQueries.GetAllUsersAsync();
+            if (response.Data == null || !response.Data.Any())
                 return NotFound();
-            return Ok(users);
+            return Ok(response);
         }
 
         [HttpGet("{id}")]
         public async Task<IActionResult> GetUserAsync(int id, CancellationToken cancellationToken)
         {
-            User user = await _userQueries.GetUserAsync(id);
-            if (user == null)
+            Response<User> response = await _userQueries.GetUserAsync(id);
+            if (response.Data == null)
                 return NotFound();
-            return Ok(user);
+            return Ok(response);
         }
     }
 }

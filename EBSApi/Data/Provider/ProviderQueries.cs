@@ -1,5 +1,6 @@
 ﻿using Dapper;
 using EBSApi.Models;
+using EBSApi.Models.Dtos;
 using EBSApi.Utility;
 using System.Data;
 
@@ -14,9 +15,10 @@ namespace EBSApi.Data
             _utility = utility;
         }
 
-        public async Task<Provider> GetProviderAsync(int providerId)
+        public async Task<Response<Provider>> GetProviderAsync(int providerId)
         {
             DynamicParameters parameters = new DynamicParameters();
+            Response<Provider> response = new Response<Provider>();
 
             parameters.Add(
                 "@return_value",
@@ -24,26 +26,39 @@ namespace EBSApi.Data
                 direction: ParameterDirection.ReturnValue);
 
             parameters.Add(
-                "@id",
-                providerId,
+                "@id", providerId,
                 dbType: DbType.Int32,
                 direction: ParameterDirection.Input);
 
-            using (var connection = _utility.CreateConnection())
+            using (IDbConnection connection = _utility.CreateConnection())
             {
                 Provider provider = (await connection
-                    .QueryAsync<Provider>
-                    ("dbo.getProvider", 
-                    parameters, 
-                    commandType: CommandType.StoredProcedure))
+                    .QueryAsync<Provider>(
+                        "dbo.getProvider", 
+                        parameters, 
+                        commandType: CommandType.StoredProcedure))
                     .FirstOrDefault();
 
-                return provider;
+                int returnValue = parameters.Get<int>("@return_value");
+
+                if (returnValue != 0)
+                {
+                    response.Error = new Error
+                    {
+                        ErrorMessage = $"SQL exception occured with the return value of {returnValue}",
+                        StatusCode = 400
+                    };
+                }
+
+                response.Data = provider;
+                response.IsSuccess = true;
+                return response;
             }
         }
-        public async Task<IEnumerable<Provider>> GetAllProvidersAsync()
+        public async Task<Response<IEnumerable<Provider>>> GetAllProvidersAsync()
         {
             DynamicParameters parameters = new DynamicParameters();
+            Response<IEnumerable<Provider>> response = new Response<IEnumerable<Provider>>();
 
             parameters.Add(
                 "@return_value",
@@ -53,12 +68,25 @@ namespace EBSApi.Data
             using (var connection = _utility.CreateConnection())
             {
                 IEnumerable<Provider> providers = (await connection
-                    .QueryAsync<Provider>
-                    ("dbo.getProviders",
-                    parameters,
-                    commandType: CommandType.StoredProcedure));
+                    .QueryAsync<Provider>(
+                        "dbo.getProviders",
+                        parameters,
+                        commandType: CommandType.StoredProcedure));
 
-                return providers;
+                int returnValue = parameters.Get<int>("@return_value");
+
+                if (returnValue != 0)
+                {
+                    response.Error = new Error
+                    {
+                        ErrorMessage = $"SQL exception occured with the return value of {returnValue}",
+                        StatusCode = 400
+                    };
+                }
+
+                response.Data = providers;
+                response.IsSuccess = true;
+                return response;
             }
         }
     }

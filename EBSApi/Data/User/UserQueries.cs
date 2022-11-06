@@ -2,6 +2,7 @@
 using EBSApi.Utility;
 using EBSApi.Models;
 using System.Data;
+using EBSApi.Models.Dtos;
 
 namespace EBSApi.Data
 {
@@ -14,43 +15,79 @@ namespace EBSApi.Data
             _utility = utility;
         }
 
-        public async Task<IEnumerable<User>> GetAllUsersAsync()
+        public async Task<Response<IEnumerable<User>>> GetAllUsersAsync()
         {
             DynamicParameters parameters = new DynamicParameters();
+            Response<IEnumerable<User>> response = new Response<IEnumerable<User>>();
 
             parameters.Add(
                 "@return_value", 
                 dbType: DbType.Int32, 
                 direction: ParameterDirection.ReturnValue);
 
-            using (var connection = _utility.CreateConnection())
+            using (IDbConnection connection = _utility.CreateConnection())
             {
-                IEnumerable<User> users = await connection.QueryAsync<User>("dbo.getUsers", parameters, commandType: System.Data.CommandType.StoredProcedure);
+                IEnumerable<User> users = await connection
+                    .QueryAsync<User>(
+                        "dbo.getUsers", 
+                        parameters, 
+                        commandType: CommandType.StoredProcedure);
 
                 int returnValue = parameters.Get<int>("@return_value");
-                return users;
+
+                if (returnValue != 0)
+                {
+                    response.Error = new Error
+                    {
+                        ErrorMessage = $"SQL exception occured with the return value of {returnValue}",
+                        StatusCode = 400
+                    };
+                }
+
+                response.Data = users;
+                response.IsSuccess = true;
+                return response;
             }
         }
 
-        public async Task<User> GetUserAsync(int id)
+        public async Task<Response<User>> GetUserAsync(int id)
         {
             DynamicParameters parameters = new DynamicParameters();
+            Response<User> response = new Response<User>();
 
-            parameters.Add("@return_value", dbType: DbType.Int32, direction: ParameterDirection.ReturnValue);
-            parameters.Add("@id", id, dbType: DbType.Int32, direction: ParameterDirection.Input);
+            parameters.Add(
+                "@return_value", 
+                dbType: DbType.Int32, 
+                direction: ParameterDirection.ReturnValue);
+            parameters.Add(
+                "@id", id, 
+                dbType: DbType.Int32, 
+                direction: ParameterDirection.Input);
 
-            using (var connection = _utility.CreateConnection())
+            using (IDbConnection connection = _utility.CreateConnection())
             {
 
                 User user = (await connection
                     .QueryAsync<User>(
                         "dbo.getUser",
                         parameters,
-                        commandType: System.Data.CommandType.StoredProcedure))
+                        commandType: CommandType.StoredProcedure))
                     .FirstOrDefault();
 
                 int returnValue = parameters.Get<int>("@return_value");
-                return user;
+
+                if (returnValue != 0)
+                {
+                    response.Error = new Error
+                    {
+                        ErrorMessage = $"SQL exception occured with the return value of {returnValue}",
+                        StatusCode = 400
+                    };
+                }
+
+                response.Data = user;
+                response.IsSuccess = true;
+                return response;
             }
         }
 
