@@ -18,7 +18,7 @@ namespace EBSApi.Controllers
         [HttpGet]
         public async Task<IActionResult> GetAllAddressesAsync(CancellationToken cancellationToken)
         {
-            IEnumerable<Address> addresses = await _addressQueries.GetAllAddressesAsync();
+            IEnumerable<Address> addresses = (await _addressQueries.GetAllAddressesAsync()).Data;
             if (addresses == null || !addresses.Any())
                 return NotFound();
             return Ok(addresses);

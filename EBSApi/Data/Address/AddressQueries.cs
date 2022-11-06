@@ -2,6 +2,7 @@
 using EBSApi.Utility;
 using EBSApi.Models;
 using System.Data;
+using EBSApi.Models.Dtos;
 
 namespace EBSApi.Data
 {
@@ -14,21 +15,40 @@ namespace EBSApi.Data
             _utility = utility;
         }
 
-        public async Task<IEnumerable<Address>> GetAllAddressesAsync()
+        public async Task<Response<IEnumerable<Address>>> GetAllAddressesAsync()
         {
             DynamicParameters parameters = new DynamicParameters();
+            Response<IEnumerable<Address>> response = new Response<IEnumerable<Address>>();
 
             parameters.Add(
                 "@return_value", 
                 dbType: DbType.Int32, 
                 direction: ParameterDirection.ReturnValue);
 
-            using (var connection = _utility.CreateConnection())
+            using (IDbConnection connection = _utility.CreateConnection())
             {
-                IEnumerable<Address> addresses = (await connection.QueryAsync<Address>("dbo.getAllAddresses", parameters, commandType: System.Data.CommandType.StoredProcedure)).ToList();
+                IEnumerable<Address> addresses = (await connection
+                    .QueryAsync<Address>(
+                    "dbo.getAllAddresses", 
+                    parameters, 
+                    commandType: CommandType.StoredProcedure))
+                    .ToList();
 
                 int returnValue = parameters.Get<int>("@return_value");
-                return addresses;
+
+                if (returnValue != 0)
+                {
+                    response.Error = new Error
+                    {
+                        ErrorMessage = $"SQL exception occured with the return value of {returnValue}",
+                        StatusCode = 400
+                    };
+
+                }
+
+                response.Data = addresses;
+                response.IsSuccess = true;
+                return response;
             }
         }
 
