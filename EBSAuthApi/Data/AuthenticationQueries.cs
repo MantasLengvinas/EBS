@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Data;
 using Dapper;
+using EBSAuthApi.Helpers;
 using EBSAuthApi.Models.Domain;
 using EBSAuthApi.Utility;
 
@@ -15,13 +16,32 @@ namespace EBSAuthApi.Data
             _sqlUtility = sqlUtility ?? throw new ArgumentNullException(nameof(sqlUtility));
         }
 
+        public async Task<(int, string?)> GetPassword(string email, CancellationToken cancelToken)
+        {
+            DynamicParameters parameters = new();
+
+            parameters.Add("@return_value", dbType: DbType.Int32, direction: ParameterDirection.ReturnValue);
+            parameters.Add("@email", email, dbType: DbType.String, direction: ParameterDirection.Input);
+
+            using (IDbConnection connection = _sqlUtility.CreateConnection())
+            {
+                string? password = (await connection.
+                    QueryAsync<string>("AUTH.getPassword",
+                                         parameters,
+                                         commandType: CommandType.StoredProcedure)).FirstOrDefault();
+
+                int returnValue = parameters.Get<int>("@return_value");
+
+                return (returnValue, password);
+            }
+        }
+
         public async Task<(int, UserInfo?)> LoginUser(string email, string password, CancellationToken cancelToken)
         {
             DynamicParameters parameters = new();
 
             parameters.Add("@return_value", dbType: DbType.Int32, direction: ParameterDirection.ReturnValue);
             parameters.Add("@email", email, dbType: DbType.String, direction: ParameterDirection.Input);
-            parameters.Add("@password", password, dbType: DbType.String, direction: ParameterDirection.Input);
 
             using (IDbConnection connection = _sqlUtility.CreateConnection())
             {
@@ -36,7 +56,7 @@ namespace EBSAuthApi.Data
             }
         }
 
-        public async Task<(int, int)> RegisterUser(string email, string password, string salt, CancellationToken cancelToken)
+        public async Task<(int, int)> RegisterUser(string email, string password, CancellationToken cancelToken)
         {
             DynamicParameters parameters = new();
 
@@ -44,7 +64,6 @@ namespace EBSAuthApi.Data
             parameters.Add("@id", dbType: DbType.Int32, direction: ParameterDirection.Output);
             parameters.Add("@email", email, dbType: DbType.String, direction: ParameterDirection.Input);
             parameters.Add("@password", password, dbType: DbType.String, direction: ParameterDirection.Input);
-            parameters.Add("@salt", salt, dbType: DbType.String, direction: ParameterDirection.Input);
             parameters.Add("@action", "create", dbType: DbType.String, direction: ParameterDirection.Input);
 
 

@@ -41,13 +41,22 @@ namespace EBSAuthApi.Services
 
             try
             {
-                userClaims.Add(new Claim(ClaimsConstants.Id, userInfo.Id.ToString()));
-                userClaims.Add(new Claim(ClaimsConstants.Email, userInfo.Email));
-                userClaims.Add(new Claim(ClaimsConstants.FullName, userInfo.FullName));
-                userClaims.Add(new Claim(ClaimsConstants.Balance, userInfo.Balance.ToString()));
-                userClaims.Add(new Claim(ClaimsConstants.Active, userInfo.Active.ToString()));
-                userClaims.Add(new Claim(ClaimsConstants.Business, userInfo.Business.ToString()));
-                userClaims.Add(new Claim(ClaimsConstants.Completed, userInfo.Completed.ToString()));
+                if (!userInfo.Completed)
+                {
+                    userClaims.Add(new Claim(ClaimsConstants.Id, userInfo.Id.ToString()));
+                    userClaims.Add(new Claim(ClaimsConstants.Email, userInfo.Email));
+                    userClaims.Add(new Claim(ClaimsConstants.Completed, userInfo.Completed.ToString()));
+                }
+                else
+                {
+                    userClaims.Add(new Claim(ClaimsConstants.Id, userInfo.Id.ToString()));
+                    userClaims.Add(new Claim(ClaimsConstants.Email, userInfo.Email));
+                    userClaims.Add(new Claim(ClaimsConstants.FullName, userInfo.FullName));
+                    userClaims.Add(new Claim(ClaimsConstants.Balance, userInfo.Balance.ToString()));
+                    userClaims.Add(new Claim(ClaimsConstants.Active, userInfo.Active.ToString()));
+                    userClaims.Add(new Claim(ClaimsConstants.Business, userInfo.Business.ToString()));
+                    userClaims.Add(new Claim(ClaimsConstants.Completed, userInfo.Completed.ToString()));
+                }
 
                 isSuccess = true;
             }
@@ -63,21 +72,6 @@ namespace EBSAuthApi.Services
             return (isSuccess, null, user);
         }
 
-        private string HashPassword(string password)
-        {
-            byte[] salt;
-            new RNGCryptoServiceProvider().GetBytes(salt = new byte[16]);
-
-            var pbkdf2 = new Rfc2898DeriveBytes(password, salt, 100000);
-            byte[] hash = pbkdf2.GetBytes(20);
-            byte[] hashBytes = new byte[36];
-            Array.Copy(salt, 0, hashBytes, 0, 16);
-            Array.Copy(hash, 0, hashBytes, 16, 20);
-            string savedPasswordHash = Convert.ToBase64String(hashBytes);
-
-            return savedPasswordHash;
-        }
-
         public async Task<AuthResponseDto> LoginUserAsync(UserLogin userLogin, CancellationToken cancelToken)
         {
             AuthResponseDto response = new();
@@ -91,6 +85,26 @@ namespace EBSAuthApi.Services
             if(string.IsNullOrEmpty(userLogin.Email) && string.IsNullOrEmpty(userLogin.Password))
             {
                 response.ErrorMessage = "Missing credentials";
+                return response;
+            }
+
+            (int passwordReturnValue, string? savedPassword) = await _authQueries.GetPassword(userLogin.Email, cancelToken);
+
+            if(passwordReturnValue != 0)
+            {
+                response.ErrorMessage = "Failed to authenticate";
+                return response;
+            }
+
+            if(savedPassword == null)
+            {
+                response.ErrorMessage = "Failed to retrieve password";
+                return response;
+            }
+
+            if(!PasswordHelper.ValidatePassword(userLogin.Password, savedPassword))
+            {
+                response.ErrorMessage = "Password is incorrect";
                 return response;
             }
 
@@ -135,12 +149,9 @@ namespace EBSAuthApi.Services
                 return response;
             }
 
-            byte[] psw = Convert.FromBase64String(clientRegister.Password);
-            clientRegister.Password = Encoding.UTF8.GetString(psw);
+            clientRegister.Password = PasswordHelper.HashPassword(clientRegister.Password);
 
-            clientRegister.Password = HashPassword(clientRegister.Password);
-
-            (int returnValue, int id) = await _authQueries.RegisterUser(clientRegister.Email, clientRegister.Password, "", cancelToken);
+            (int returnValue, int id) = await _authQueries.RegisterUser(clientRegister.Email, clientRegister.Password, cancelToken);
 
             if(returnValue != 0)
             {

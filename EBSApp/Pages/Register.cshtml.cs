@@ -2,6 +2,7 @@
 using System.Text;
 using EBSApp.Models.Authentication;
 using EBSApp.Services.General;
+using EBSAuthenticationHandler.Helpers;
 using EBSAuthenticationHandler.Services;
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Mvc;
@@ -25,9 +26,7 @@ namespace EBSApp.Pages
             userLogin.Email = Request.Form["email"];
             userLogin.Password = Request.Form["password"];
 
-            byte[] psw = Encoding.UTF8.GetBytes(userLogin.Password);
-
-            userLogin.Password = Convert.ToBase64String(psw);
+            userLogin.Password = PasswordHelper.EncodePassword(userLogin.Password);
 
             AuthenticateResult result = await _authService.RegisterClient(userLogin);
 
