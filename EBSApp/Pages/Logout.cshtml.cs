@@ -12,7 +12,7 @@ namespace EBSApp.Pages
         {
             await HttpContext.SignOutAsync();
 
-            return Page();
+            return Redirect("./");
         }
 
     }

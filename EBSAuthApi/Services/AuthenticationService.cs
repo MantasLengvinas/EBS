@@ -43,12 +43,13 @@ namespace EBSAuthApi.Services
             {
                 if (!userInfo.Completed)
                 {
-                    userClaims.Add(new Claim(ClaimsConstants.Id, userInfo.Id.ToString()));
+                    userClaims.Add(new Claim(ClaimsConstants.ClientId, userInfo.ClientId.ToString()));
                     userClaims.Add(new Claim(ClaimsConstants.Email, userInfo.Email));
                     userClaims.Add(new Claim(ClaimsConstants.Completed, userInfo.Completed.ToString()));
                 }
                 else
                 {
+                    userClaims.Add(new Claim(ClaimsConstants.ClientId, userInfo.ClientId.ToString()));
                     userClaims.Add(new Claim(ClaimsConstants.Id, userInfo.Id.ToString()));
                     userClaims.Add(new Claim(ClaimsConstants.Email, userInfo.Email));
                     userClaims.Add(new Claim(ClaimsConstants.FullName, userInfo.FullName));
@@ -160,7 +161,7 @@ namespace EBSAuthApi.Services
             }
 
             UserInfo userInfo = new();
-            userInfo.Id = id;
+            userInfo.ClientId = id;
             userInfo.Email = clientRegister.Email;
 
             (bool authSuccess, string? authErrorMessage, User? user) = await AuthenticateUserAsync(userInfo);
@@ -177,6 +178,19 @@ namespace EBSAuthApi.Services
             response.IsSuccess = true;
 
             return response;
+        }
+
+        public async Task<bool> CompleteRegistrationAsync(CompleteRegistration userInfo, CancellationToken cancelToken)
+        {
+            if (userInfo == null)
+                return false;
+
+            int returnValue = await _authQueries.CompleteRegistration(userInfo, cancelToken);
+
+            if (returnValue != 0)
+                return false;
+
+            return true;
         }
     }
 }

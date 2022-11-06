@@ -3,6 +3,7 @@ using System.Data;
 using Dapper;
 using EBSAuthApi.Helpers;
 using EBSAuthApi.Models.Domain;
+using EBSAuthApi.Models.Dtos.Requests;
 using EBSAuthApi.Utility;
 
 namespace EBSAuthApi.Data
@@ -78,6 +79,31 @@ namespace EBSAuthApi.Data
                 int id = parameters.Get<int>("@id");
 
                 return (returnValue, id);
+            }
+        }
+
+        public async Task<int> CompleteRegistration(CompleteRegistration userInfo, CancellationToken cancelToken)
+        {
+            DynamicParameters parameters = new();
+
+            parameters.Add("@return_value", dbType: DbType.Int32, direction: ParameterDirection.ReturnValue);
+            parameters.Add("@id", userInfo.Id, dbType: DbType.Int32, direction: ParameterDirection.InputOutput);
+            parameters.Add("@fullName", userInfo.FullName, dbType: DbType.String, direction: ParameterDirection.Input);
+            parameters.Add("@business", userInfo.Business, dbType: DbType.Boolean, direction: ParameterDirection.Input);
+            parameters.Add("@balance", userInfo.Balance, dbType: DbType.Decimal, direction: ParameterDirection.Input);
+            parameters.Add("@action", "complete", dbType: DbType.String, direction: ParameterDirection.Input);
+
+
+            using (IDbConnection connection = _sqlUtility.CreateConnection())
+            {
+                await connection
+                    .QueryAsync("AUTH.registerClient",
+                                parameters,
+                                commandType: CommandType.StoredProcedure);
+
+                int returnValue = parameters.Get<int>("@return_value");
+
+                return returnValue;
             }
         }
     }

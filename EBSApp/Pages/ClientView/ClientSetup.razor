@@ -7,24 +7,19 @@
             <div class="">
                 <div class="form-group m-3">
                     <label>Vardas</label>
-                    <input class="form-control" />
+                    <input @bind="Name" required class="form-control" />
                 </div>
                 <div class="form-group m-3">
                     <label>Pavardė</label>
-                    <input class="form-control" />
+                    <input @bind="Surname" required class="form-control" />
                 </div>
-                <div class="form-group m-3">
-                    <label>Adresas</label>
-                    <input class="form-control" />
-                </div>
-
                 <div class="form-group m-3">
                     <label class="form-check-label mr-1">Verslo klientas?</label>
-                    <input type="checkbox" class="form-check-input" />
+                    <input @bind="UserInfo.Business" required type="checkbox" class="form-check-input" />
                 </div>
 
                 <div class="w-100 d-flex justify-content-center pr-5 pl-5 pt-3 m-3">
-                    <button type="submit" class="btn btn-primary w-100">Išsaugoti</button>
+                    <button @onclick="CompleteRegistration" type="submit" class="btn btn-primary w-100">Išsaugoti</button>
                 </div>
             </div>
         </div>
