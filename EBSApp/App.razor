@@ -3,6 +3,7 @@
 
 @inject EBSApp.Models.TokenStore TokenStore
 @inject AuthenticationStateProvider AuthStateProvider
+@using System.Security.Claims;
 
 <CascadingAuthenticationState>
     <Router AppAssembly="@typeof(App).Assembly" PreferExactMatches="@true">
@@ -24,6 +25,9 @@
     {
         AuthenticationState authState = await AuthStateProvider.GetAuthenticationStateAsync();
 
-        TokenStore.AccessToken = authState.User.Claims.ToList().Find(x => x.Type == "accessToken").Value;
+        Claim? accessToken = authState.User.Claims.ToList().Find(x => x.Type == "accessToken");
+
+        if (accessToken != null)
+            TokenStore.AccessToken = accessToken.Value;
     }
 }
