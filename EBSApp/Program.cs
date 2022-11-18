@@ -7,18 +7,25 @@ using EBSApp.Auth;
 using EBSApp.Services.General;
 using EBSAuthenticationHandler.Extensions;
 using Microsoft.AspNetCore.Authentication.Cookies;
-
-Log.Logger = (Serilog.ILogger)new LoggerConfiguration()
-    .WriteTo.Console()
-    .CreateLogger();
+using EBSApp.Options;
 
 var builder = WebApplication.CreateBuilder(args);
 
-builder.Host.UseSerilog((context, config) =>
-{
-    _ = config.ReadFrom.Configuration(builder.Configuration);
-});
+string env = Environment.GetEnvironmentVariable("ASPNETCORE_ENVIRONMENT");
 
+if (env != Environments.Development)
+{
+    builder.Host.ConfigureAppConfiguration((hostingContext, config) =>
+    {
+        AppSettingsOptions paths = builder.Configuration
+                                    .GetSection(AppSettingsOptions.Position)
+                                    .Get<AppSettingsOptions>();
+
+        config.AddJsonFile(paths.Production,
+                            optional: false,
+                            reloadOnChange: true);
+    });
+}
 
 builder.Services.AddRazorPages();
 builder.Services.AddServerSideBlazor();

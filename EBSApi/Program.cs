@@ -1,7 +1,24 @@
 ﻿using EBSApi.Utility;
 using EBSApi.Data;
+using EBSApi.Options;
 
 var builder = WebApplication.CreateBuilder(args);
+
+string env = Environment.GetEnvironmentVariable("ASPNETCORE_ENVIRONMENT");
+
+if(env != Environments.Development)
+{
+    builder.Host.ConfigureAppConfiguration((hostingContext, config) =>
+    {
+        AppSettingsOptions paths = builder.Configuration
+                                    .GetSection(AppSettingsOptions.Position)
+                                    .Get<AppSettingsOptions>();
+
+        config.AddJsonFile(paths.Production,
+                            optional: false,
+                            reloadOnChange: true);
+    });
+}
 
 // Common services
 builder.Services.AddSingleton(config =>
