@@ -30,8 +30,6 @@ if (env != Environments.Development)
 builder.Services.AddRazorPages();
 builder.Services.AddServerSideBlazor();
 
-builder.Services.AddLogging(config => config.AddSerilog());
-
 builder.Services.AddScoped<IApiClient, ApiClient>(config => {
 
     HttpClient client = new();
