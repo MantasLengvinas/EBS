@@ -1,4 +1,6 @@
-﻿<div class="topmenu container-fluid">
+﻿@inject EBSApp.Models.UserStore UserStore
+
+<div class="topmenu container-fluid">
         <div class="row">
             <div class="col-md-2">
                 <h1>LOGO</h1>
@@ -12,7 +14,15 @@
             </div>
             <div class="col-md-4 d-flex justify-content-end align-items-center">
                 <AuthorizeView>
-                    @context.User.Identity.Name
+                    <div class="dropdown-container">
+                        <span class="user-name">@(UserStore.FullName != null ? UserStore.FullName : context.User.Identity.Name)</span>
+                        <div class="dropdown-content">
+                            <a href="/profile" class="dropdown-content-item">Profilis</a>
+                            <a href="/clientsetup" class="dropdown-content-item">Pridėti vartotoją</a>
+                            <a href="/logout" class="dropdown-content-item">Atsijungti</a>
+                        </div>
+                    </div>
+
                 </AuthorizeView>
 
             </div>

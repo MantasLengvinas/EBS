@@ -2,7 +2,8 @@
 @using EBSApp.Shared
 
 @inject EBSApp.Models.TokenStore TokenStore
-@inject AuthenticationStateProvider AuthStateProvider
+@inject EBSApp.Models.UserStore UserStore
+@inject AuthenticationStateProvider AuthStateProvider 
 @using System.Security.Claims;
 
 <CascadingAuthenticationState>
@@ -25,9 +26,21 @@
     {
         AuthenticationState authState = await AuthStateProvider.GetAuthenticationStateAsync();
 
-        Claim? accessToken = authState.User.Claims.ToList().Find(x => x.Type == "accessToken");
+        TokenStore.AccessToken = GetClaim(authState, "accessToken");
 
-        if (accessToken != null)
-            TokenStore.AccessToken = accessToken.Value;
+        UserStore.ClientID = GetClaim(authState, "clientId");
+        UserStore.FullName = GetClaim(authState, "fullName");
+        UserStore.Balance = GetClaim(authState, "balance");
+
+    }
+
+    private string? GetClaim(AuthenticationState authState, string claimName)
+    {
+        Claim? claim = authState.User.Claims.ToList().Find(x => x.Type == claimName);
+
+        if (claim == null)
+            return null;
+
+        return claim.Value;
     }
 }

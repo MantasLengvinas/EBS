@@ -8,7 +8,9 @@ namespace EBSApp.Pages
     public partial class Index : ComponentBase
     {
         [Inject]
-        public TokenStore TokenStore { get; set; }
+        TokenStore TokenStore { get; set; }
+
+        int Address { get; set; } = 0;
 
         protected override async Task OnInitializedAsync()
         {
