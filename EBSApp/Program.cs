@@ -42,6 +42,7 @@ builder.Services.AddScoped<IApiClient, ApiClient>(config => {
 });
 
 builder.Services.AddScoped<TokenStore>();
+builder.Services.AddScoped<UserStore>();
 
 builder.Services.AddEBSAuthentication(options =>
 {
