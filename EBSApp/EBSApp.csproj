@@ -11,6 +11,7 @@
     <Content Remove="wwwroot\images\" />
     <Content Remove="wwwroot\images\logo\" />
     <Content Remove="wwwroot\scripts\" />
+    <Content Remove="wwwroot\images\icon\" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="wwwroot\images\" />
@@ -27,6 +28,8 @@
     <Folder Include="Options\" />
     <Folder Include="Shared\Components\" />
     <Folder Include="Pages\ClientView\" />
+    <Folder Include="wwwroot\images\icon\" />
+    <Folder Include="Pages\Billing\" />
   </ItemGroup>
   <ItemGroup>
     <None Remove="Serilog" />
@@ -44,6 +47,7 @@
     <None Remove="Options\" />
     <None Remove="Shared\Components\" />
     <None Remove="Pages\ClientView\" />
+    <None Remove="Pages\Billing\" />
   </ItemGroup>
   <ItemGroup>
     <PackageReference Include="Serilog" Version="2.12.0" />

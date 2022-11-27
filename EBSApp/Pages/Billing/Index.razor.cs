@@ -3,7 +3,7 @@ using EBSApp.Models;
 using Microsoft.AspNetCore.Components;
 using Serilog;
 
-namespace EBSApp.Pages
+namespace EBSApp.Pages.Billing
 {
     public partial class Index : ComponentBase
     {
