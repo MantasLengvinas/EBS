@@ -4,14 +4,17 @@
             Elektra
         </h5>
         <span>
-            Objekto kodas: 1
+            Objekto kodas: <b>@ID</b>
+        </span>
+        <span>
+            Tiekėjas: <b>@Provider</b>
         </span>
     </div>
     <div class="action-box-content">
         <div class="action-box-content-info">
-            <span class="action-adress">Didlaukio 59 711B</span>
+            <span class="action-adress">@Address</span>
             <span class="action-plan">
-                Taikomas <b>Standartinis</b> planas
+                Taikomas <b>@(Business == "True" ? "Verslo" : "Standartinis")</b> planas
             </span>
         </div>
         <table class="records-table">

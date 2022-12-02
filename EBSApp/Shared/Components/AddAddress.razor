@@ -1,0 +1,38 @@
+﻿<div class="modal @(IsOpen ? "modal-active": null)">
+
+    <!-- Modal content -->
+    <div class="modal-content container">
+        <div class="row border-bottom">
+            <div class="col-md-8 d-flex align-items-center">
+                <h5 style="margin: 0">Pridėti naują objektą</h5>
+            </div>
+            <div class="col-md-4 d-flex justify-content-end">
+                <span @onclick="Close" class="close">&times;</span>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-md-12">
+                <div class="form-group m-1">
+                    <label for="address">Adresas</label>
+                    <input type="text" class="form-control" id="address">
+                </div>
+            </div>
+        </div>
+        <div class="row border-bottom">
+            <div class="col-md-12">
+                <div class="form-group m-1 mb-3">
+                    <label for="provider">Tiekėjas</label>
+                    <select class="form-select">
+                        <option></option>
+                    </select>
+                </div>
+            </div>
+        </div>
+        <div class="row" style="margin-top: 2rem;">
+            <div class="col-md-12 d-flex justify-content-end">
+                <button class="btn action-btn">Išsaugoti</button>
+            </div>
+        </div>
+    </div>
+
+</div>

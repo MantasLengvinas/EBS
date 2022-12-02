@@ -20,27 +20,30 @@
     </div>
 </div>
 
-<div class="container-fluid content-container">
-    @if (Address == 0)
-    {
-        <div class="row not-exist-container">
-            <div class="col-md-8 d-flex align-items-center">
-                <span>
-                    Neturite pridėtų objektų
-                </span>
+@if (Addresses != null)
+{
+    <div class="container-fluid content-container">
+        @if (Addresses.Count == 0)
+        {
+            <div class="row not-exist-container">
+                <div class="col-md-8 d-flex align-items-center">
+                    <span>
+                        Neturite pridėtų objektų
+                    </span>
+                </div>
+                <div class="col-md-4 actions">
+                    <button class="btn action-btn" data-toggle="modal" data-target="#addAddress">Pridėti naują</button>
+                </div>
             </div>
-            <div class="col-md-4 actions">
-                <button class="btn action-btn" data-toggle="modal" data-target="#addAddress">Pridėti naują</button>
-            </div>
-        </div>
-    }
+        }
 
-    <ActionBox @key="1" />
+        @foreach (var address in Addresses)
+        {
+            <ActionBox @key="address.AddressId" ID="@address.AddressId" Address="@address.FullAddress" Provider="@address.Provider" Business="@UserStore.Business" />
+        }
 
-    <ActionBox @key="2" />
-
-</div>
-
+    </div>
+}
 
 
 

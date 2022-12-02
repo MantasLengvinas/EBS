@@ -1,5 +1,7 @@
 ﻿@page "/profile"
 
+<AddAddress @ref="AddressModal" />
+
 <AuthorizeView>
 
     <div class="container rounded bg-white mt-5 mb-5">
@@ -35,32 +37,35 @@
 
                     <div class="mt-4">
                         <h5 class="mb-3">Objektai</h5>
-                        <div class="row action-box">
-                            <div class="action-box-header">
-                                <h5>
-                                    Didlaukio 59 711B
-                                </h5>
+                        @foreach (var address in Addresses)
+                        {
+                            <div class="row action-box">
+                                <div class="action-box-header">
+                                    <h5>
+                                        @address.FullAddress
+                                    </h5>
+                                </div>
+                                <table class="records-table">
+                                    <thead>
+                                        <tr>
+                                            <td>Objekto kodas</td>
+                                            <td>Tiekėjas</td>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <tr>
+                                            <td>@address.AddressId</td>
+                                            <td>@address.Provider</td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                                <div class="action-box-actions">
+                                    <button class="btn btn-danger">
+                                        Pašalinti
+                                    </button>
+                                </div>
                             </div>
-                            <table class="records-table">
-                                <thead>
-                                    <tr>
-                                        <td>Objekto kodas</td>
-                                        <td>Tiekėjas</td>
-                                    </tr>
-                                </thead>
-                                <tbody>
-                                    <tr>
-                                        <td>1</td>
-                                        <td>Electrum</td>
-                                    </tr>
-                                </tbody>
-                            </table>
-                            <div class="action-box-actions">
-                                <button class="btn btn-danger">
-                                    Pašalinti
-                                </button>
-                            </div>
-                        </div>
+                        }
                     </div>
                 </div>
             </div>
@@ -68,10 +73,18 @@
                 <div class="p-3 py-5">
                     <div class="d-flex justify-content-between align-items-center"><span>Profilio valdymas</span></div><br>
                     <div class="col-md-12">
+                        <div class="form-group mb-4">
+                            <label for="provider">Paskyra</label>
+                            <select class="form-select">
+                                <option></option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="col-md-12">
                         <button class="btn action-btn">Pridėti naują paskyrą</button>
                     </div> <br>
                     <div class="col-md-12">
-                        <button class="btn action-btn">Pridėti objektą</button>
+                        <button @onclick="AddressModal.Open" class="btn action-btn">Pridėti objektą</button>
                     </div> <br>
                     <div class="col-md-12">
                         <button class="btn btn-danger">Išjungti paskyrą</button>

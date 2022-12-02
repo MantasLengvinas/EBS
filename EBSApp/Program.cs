@@ -8,6 +8,8 @@ using EBSApp.Services.General;
 using EBSAuthenticationHandler.Extensions;
 using Microsoft.AspNetCore.Authentication.Cookies;
 using EBSApp.Options;
+using Microsoft.Extensions.Configuration;
+using EBSApp.Services;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -30,20 +32,6 @@ if (env != Environments.Development)
 builder.Services.AddRazorPages();
 builder.Services.AddServerSideBlazor();
 
-builder.Services.AddScoped<IApiClient, ApiClient>(config => {
-
-    HttpClient client = new();
-    string apiKey = builder.Configuration.GetValue<string>("EBSApiKey");
-
-    client.DefaultRequestHeaders.Add("X-API-KEY", apiKey);
-
-    return new ApiClient(client);
-
-});
-
-builder.Services.AddScoped<TokenStore>();
-builder.Services.AddScoped<UserStore>();
-
 builder.Services.AddEBSAuthentication(options =>
 {
     options.TokenAudience = builder.Configuration.GetValue<string>("Auth:TokenAudience");
@@ -53,6 +41,25 @@ builder.Services.AddEBSAuthentication(options =>
     options.ApiKey = builder.Configuration.GetValue<string>("Auth:ApiKey");
     options.TokenPublicSigningKey = builder.Configuration.GetValue<string>("Auth:SigningKey");
 });
+
+builder.Services.AddScoped<IApiClient, ApiClient>(config => {
+
+    HttpClient client = new();
+    string apiKey = builder.Configuration.GetValue<string>("EBSApiKey");
+
+    client.DefaultRequestHeaders.Add("X-API-KEY", apiKey);
+    client.BaseAddress = new Uri(builder.Configuration["EBSApi"]);
+
+    return new ApiClient(client);
+
+});
+
+builder.Services.AddScoped<TokenStore>();
+builder.Services.AddScoped<UserStore>();
+
+builder.Services.AddScoped<IAddressService, AddressService>();
+builder.Services.AddScoped<IProviderService, ProviderService>();
+
 
 var app = builder.Build();
 
