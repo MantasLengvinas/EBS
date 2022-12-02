@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Net;
+using EBSApp.Models;
 using EBSApp.Models.Dtos.Responses;
 using Microsoft.AspNetCore.Http;
 using Newtonsoft.Json;
@@ -15,9 +16,10 @@ namespace EBSApp.Services.General
             _client = httpClient ?? throw new ArgumentNullException(nameof(httpClient));
         }
 
-        public async Task<GenericResponse<T>> GetAsync<T>(string url, CancellationToken cancelToken) where T : class, new()
+        public async Task<ApiResponse<T>> GetAsync<T>(string url, CancellationToken cancelToken) where T : class, new()
         {
-            GenericResponse<T> response = new() { IsSuccess = false };
+            ApiResponse<T> apiResponse = new() { IsSuccess = false };
+            GenericResponse<T> genericResponse = new();
             HttpStatusCode statusCode = HttpStatusCode.Processing;
 
             try
@@ -29,30 +31,37 @@ namespace EBSApp.Services.General
 
                 string content = await responseMessage.Content.ReadAsStringAsync(cancelToken);
 
-                T result;
-                result = JsonConvert.DeserializeObject<T>(content);
+                if (!string.IsNullOrEmpty(content))
+                {
+                    genericResponse = JsonConvert.DeserializeObject<GenericResponse<T>>(content);
+                    if(genericResponse != null)
+                        apiResponse.Data = genericResponse.Data;
+                }
+                
 
-                response.Data = result;
-                response.IsSuccess = true;
+                apiResponse.IsSuccess = true;
 
-                return response;
+                return apiResponse;
             }
             catch (Exception e)
             {
-                response.IsSuccess = false;
-                response.Error = new Error()
+                apiResponse.IsSuccess = false;
+                apiResponse.Error = new Error()
                 {
                     StatusCode = (int)statusCode,
                     Message = "Unhandled exception"
                 };
 
-                return response;
+                return apiResponse;
             }
         }
 
-        public async Task<GenericResponse<T>> PostAsync<T, R>(string url, R data, CancellationToken cancelToken)
+        public async Task<Models.ApiResponse<T>> PostAsync<T, R>(string url, R data, CancellationToken cancelToken)
+            where T : class, new()
+            where R : class, new()
         {
-            GenericResponse<T> response = new() { IsSuccess = false };
+            ApiResponse<T> apiResponse = new();
+            GenericResponse<T> genericResponse = new();
             HttpStatusCode statusCode = HttpStatusCode.Processing;
 
             try
@@ -66,24 +75,27 @@ namespace EBSApp.Services.General
 
                 string content = await responseMessage.Content.ReadAsStringAsync(cancelToken);
 
-                T? result;
-                result = JsonConvert.DeserializeObject<T>(content);
+                if (!string.IsNullOrEmpty(content))
+                {
+                    genericResponse = JsonConvert.DeserializeObject<GenericResponse<T>>(content);
+                    if (genericResponse != null)
+                        apiResponse.Data = genericResponse.Data;
+                }
 
-                response.Data = result;
-                response.IsSuccess = true;
+                apiResponse.IsSuccess = true;
 
-                return response;
+                return apiResponse;
             }
             catch (Exception e)
             {
-                response.IsSuccess = false;
-                response.Error = new Error()
+                apiResponse.IsSuccess = false;
+                apiResponse.Error = new Error()
                 {
                     StatusCode = (int)statusCode,
                     Message = e.Message
                 };
 
-                return response;
+                return apiResponse;
             }
         }
     }

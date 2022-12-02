@@ -29,8 +29,10 @@
         TokenStore.AccessToken = GetClaim(authState, "accessToken");
 
         UserStore.ClientID = GetClaim(authState, "clientId");
+        UserStore.UserId = GetClaim(authState, "id");
         UserStore.FullName = GetClaim(authState, "fullName");
         UserStore.Balance = GetClaim(authState, "balance");
+        UserStore.Business = GetClaim(authState, "business");
 
     }
 
