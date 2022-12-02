@@ -1,5 +1,7 @@
 ﻿@page "/"
 
+<AddAddress @ref="AddressModal" />
+
 <div class="modal" tabindex="-1" role="dialog" id="addAddress">
     <div class="modal-dialog" role="document">
         <div class="modal-content">
@@ -32,7 +34,7 @@
                     </span>
                 </div>
                 <div class="col-md-4 actions">
-                    <button class="btn action-btn" data-toggle="modal" data-target="#addAddress">Pridėti naują</button>
+                    <button @onclick="AddressModal.Open" class="btn action-btn" data-toggle="modal" data-target="#addAddress">Pridėti naują</button>
                 </div>
             </div>
         }
