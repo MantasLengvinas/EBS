@@ -3,6 +3,7 @@ using EBSApp.Models;
 using EBSApp.Models.Dtos;
 using EBSApp.Models.Dtos.Responses;
 using EBSApp.Services;
+using EBSApp.Shared.Components;
 using Microsoft.AspNetCore.Components;
 using Serilog;
 
@@ -16,6 +17,8 @@ namespace EBSApp.Pages.Billing
         UserStore UserStore { get; set; }
         [Inject]
         IAddressService AddressService { get; set; }
+
+        AddAddress AddressModal { get; set; }
 
         List<GetAddressResponseDto> Addresses { get; set; } = new();
 
