@@ -11,6 +11,6 @@ namespace EBSApi.Data
         public Task<Response<IEnumerable<Usage>>> GetAllUsagesAsync();
         public Task<Response<Usage>> SetUsagePaidAsync(int id);
         public Task<Response<Usage>> CreateUsageAsync(Usage usage);
-        public Task<Response<PaymentDto>> GetAddressUnpaidUsagesAsync(int id);
+        public Task<Response<PaymentDto>> GetAddressUnpaidUsagesAsync(int id, bool history = false);
     }
 }
