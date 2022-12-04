@@ -25,6 +25,15 @@ namespace EBSApi.Controllers
             return Ok(response);
         }
 
+        [HttpPost]
+        public async Task<IActionResult> CreateUserAsync([FromBody] User user, CancellationToken cancellationToken)
+        {
+            Response<User> response = await _userQueries.CreateUserAsync(user);
+            if (response.Data == null)
+                return NotFound();
+            return Ok(response);
+        }
+
         [HttpGet("{id}")]
         public async Task<IActionResult> GetUserAsync(int id, CancellationToken cancellationToken)
         {

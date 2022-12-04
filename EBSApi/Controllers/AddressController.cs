@@ -20,7 +20,22 @@ namespace EBSApi.Controllers
         public async Task<IActionResult> GetAllAddressesAsync(CancellationToken cancellationToken)
         {
             Response<IEnumerable<Address>> response = await _addressQueries.GetAllAddressesAsync();
+
+            if (response.IsSuccess == false)
+                return BadRequest(response);
             if (response.Data == null || !response.Data.Any())
+                return NotFound();
+            return Ok(response);
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> CreateAddressAsync([FromBody]Address address, CancellationToken cancellationToken)
+        {
+            Response<Address> response = await _addressQueries.CreateAddressAsync(address);
+
+            if (response.IsSuccess == false)
+                return BadRequest(response);
+            if (response.Data == null)
                 return NotFound();
             return Ok(response);
         }
@@ -29,6 +44,9 @@ namespace EBSApi.Controllers
         public async Task<IActionResult> GetAddresesUserAsync(int userId, CancellationToken cancellationToken)
         {
             Response<IEnumerable<Address>> response = await _addressQueries.GetAddressesUserAsync(userId);
+
+            if (response.IsSuccess == false)
+                return BadRequest(response);
             if (response.Data == null || !response.Data.Any())
                 return NotFound();
             return Ok(response);
@@ -38,6 +56,9 @@ namespace EBSApi.Controllers
         public async Task<IActionResult> GetAddresesProviderAsync(int providerId, CancellationToken cancellationToken)
         {
             Response<IEnumerable<Address>> response = await _addressQueries.GetAddressesProviderAsync(providerId);
+
+            if (response.IsSuccess == false)
+                return BadRequest(response);
             if (response.Data == null || !response.Data.Any())
                 return NotFound();
             return Ok(response);
@@ -47,6 +68,9 @@ namespace EBSApi.Controllers
         public async Task<IActionResult> GetAddressAsync(int addressId, CancellationToken cancellationToken)
         {
             Response<Address> response = await _addressQueries.GetAddressAsync(addressId);
+
+            if (response.IsSuccess == false)
+                return BadRequest(response);
             if (response.Data == null)
                 return NotFound();
             return Ok(response);

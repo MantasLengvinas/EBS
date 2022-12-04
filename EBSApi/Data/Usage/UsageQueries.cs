@@ -48,6 +48,7 @@ namespace EBSApi.Data
                         ErrorMessage = $"SQL exception occured with the return value of {returnValue}",
                         StatusCode = 400
                     };
+                    return response;
                 }
 
                 response.Data = usage;
@@ -97,6 +98,7 @@ namespace EBSApi.Data
                         ErrorMessage = $"SQL exception occured with the return value of {returnValue}",
                         StatusCode = 400
                     };
+                    return response;
                 }
 
                 response.Data = usage;
@@ -146,6 +148,7 @@ namespace EBSApi.Data
                         ErrorMessage = $"SQL exception occured with the return value of {returnValue}",
                         StatusCode = 400
                     };
+                    return response;
                 }
 
                 response.Data = usage;
@@ -181,6 +184,7 @@ namespace EBSApi.Data
                         ErrorMessage = $"SQL exception occured with the return value of {returnValue}",
                         StatusCode = 400
                     };
+                    return response;
                 }
 
                 response.Data = usage;
@@ -189,10 +193,56 @@ namespace EBSApi.Data
             }
         }
 
-        public async Task<Response<int>> SetUsagePaid(int id)
+        public async Task<Response<PaymentDto>> GetAddressUnpaidUsagesAsync(int id)
         {
             DynamicParameters parameters = new DynamicParameters();
-            Response<int> response = new Response<int>();
+            Response<PaymentDto> response = new Response<PaymentDto>();
+
+            parameters.Add(
+                "@return_value",
+                dbType: DbType.Int32,
+                direction: ParameterDirection.ReturnValue);
+
+            parameters.Add(
+                "@id", id,
+                dbType: DbType.Int32,
+                direction: ParameterDirection.Input);
+
+            using (IDbConnection connection = _utility.CreateConnection())
+            {
+                SqlMapper.GridReader res = await connection
+                    .QueryMultipleAsync(
+                        "dbo.getAddressUnpaidUsages",
+                        parameters,
+                        commandType: CommandType.StoredProcedure);
+
+                response.Data = new PaymentDto
+                {
+                    Usages = await res.ReadAsync<Usage>(),
+                    PaymentSum = (await res.ReadAsync<double>()).FirstOrDefault()
+                };
+
+                int returnValue = parameters.Get<int>("@return_value");
+
+                 if (returnValue != 0)
+                 {
+                     response.Error = new Error
+                     {
+                         ErrorMessage = $"SQL exception occured with the return value of {returnValue}",
+                         StatusCode = 400
+                     };
+                     return response;
+                 }
+
+                response.IsSuccess = true;
+                return response;
+            }
+        }
+
+        public async Task<Response<Usage>> SetUsagePaidAsync(int id)
+        {
+            DynamicParameters parameters = new DynamicParameters();
+            Response<Usage> response = new Response<Usage>();
 
             parameters.Add(
                 "@return_value",
@@ -206,11 +256,12 @@ namespace EBSApi.Data
 
             using (IDbConnection connection = _utility.CreateConnection())
             {
-                await connection
+                Usage res = (await connection
                     .QueryAsync<Usage>(
                         "dbo.setUsagePaid",
                         parameters,
-                        commandType: CommandType.StoredProcedure);
+                        commandType: CommandType.StoredProcedure))
+                    .FirstOrDefault();
 
                 int returnValue = parameters.Get<int>("@return_value");
 
@@ -221,9 +272,72 @@ namespace EBSApi.Data
                         ErrorMessage = $"SQL exception occured with the return value of {returnValue}",
                         StatusCode = 400
                     };
+                    return response;
                 }
 
-                response.Data = id;
+                response.Data = res;
+                response.IsSuccess = true;
+                return response;
+            }
+        }
+
+        public async Task<Response<Usage>> CreateUsageAsync(Usage usage)
+        {
+            DynamicParameters parameters = new DynamicParameters();
+            Response<Usage> response = new Response<Usage>();
+
+            parameters.Add(
+                "@return_value",
+                dbType: DbType.Int32,
+                direction: ParameterDirection.ReturnValue);
+
+            parameters.Add(
+                "@onDate", usage.OnDate,
+                dbType: DbType.Date,
+                direction: ParameterDirection.Input);
+
+            parameters.Add(
+                "@electricityDue", usage.ElectricityDue,
+                dbType: DbType.Double,
+                direction: ParameterDirection.Input);
+            
+            parameters.Add(
+                "@isPaid", usage.IsPaid,
+                dbType: DbType.Boolean,
+                direction: ParameterDirection.Input);            
+            
+            parameters.Add(
+                "@addressId", usage.AddressId,
+                dbType: DbType.Int32,
+                direction: ParameterDirection.Input);        
+            
+            parameters.Add(
+                "@paidTariff", usage.PaidTariff,
+                dbType: DbType.Double,
+                direction: ParameterDirection.Input);
+
+            using (IDbConnection connection = _utility.CreateConnection())
+            {
+                (usage.UsageId, usage.AmountDue, usage.PaidTariff) = (await connection
+                    .QueryAsync<(int, double, double)>(
+                        "dbo.createUsage",
+                        parameters,
+                        commandType: CommandType.StoredProcedure))
+                        .FirstOrDefault();
+                    
+                int returnValue = parameters.Get<int>("@return_value");
+
+                if (returnValue != 0)
+                {
+                    response.Error = new Error
+                    {
+                        ErrorMessage = $"SQL exception occured with the return value of {returnValue}",
+                        StatusCode = 400
+                    };
+                    return response;
+                }
+
+                response.Data = usage;
                 response.IsSuccess = true;
                 return response;
             }

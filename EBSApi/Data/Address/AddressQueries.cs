@@ -43,6 +43,7 @@ namespace EBSApi.Data
                         ErrorMessage = $"SQL exception occured with the return value of {returnValue}",
                         StatusCode = 400
                     };
+                    return response;
                 }
 
                 response.Data = addresses;
@@ -84,6 +85,7 @@ namespace EBSApi.Data
                         ErrorMessage = $"SQL exception occured with the return value of {returnValue}",
                         StatusCode = 400
                     };
+                    return response;
                 }
 
                 response.Data = addresses;
@@ -125,6 +127,7 @@ namespace EBSApi.Data
                         ErrorMessage = $"SQL exception occured with the return value of {returnValue}",
                         StatusCode = 400
                     };
+                    return response;
                 }
 
                 response.Data = addresses;
@@ -165,6 +168,59 @@ namespace EBSApi.Data
                         ErrorMessage = $"SQL exception occured with the return value of {returnValue}",
                         StatusCode = 400
                     };
+                    return response;
+                }
+
+                response.Data = address;
+                response.IsSuccess = true;
+                return response;
+            }
+        }
+
+        public async Task<Response<Address>> CreateAddressAsync(Address address)
+        {
+            DynamicParameters parameters = new DynamicParameters();
+            Response<Address> response = new Response<Address>();
+
+            parameters.Add(
+                "@return_value",
+                dbType: DbType.Int32,
+                direction: ParameterDirection.ReturnValue);
+
+            parameters.Add(
+                "@fullAddress", address.FullAddress,
+                dbType: DbType.String,
+                direction: ParameterDirection.Input);            
+            
+            parameters.Add(
+                "@userId", address.UserId,
+                dbType: DbType.Int32,
+                direction: ParameterDirection.Input);            
+            
+            parameters.Add(
+                "@providerId", address.ProviderId,
+                dbType: DbType.Int32,
+                direction: ParameterDirection.Input);
+
+            using (IDbConnection connection = _utility.CreateConnection())
+            {
+                address.AddressId = (await connection
+                    .QueryAsync<int>(
+                        "dbo.createAddress",
+                        parameters,
+                        commandType: CommandType.StoredProcedure))
+                    .FirstOrDefault();
+
+                int returnValue = parameters.Get<int>("@return_value");
+
+                if (returnValue != 0)
+                {
+                    response.Error = new Error
+                    {
+                        ErrorMessage = $"SQL exception occured with the return value of {returnValue}",
+                        StatusCode = 400
+                    };
+                    return response;
                 }
 
                 response.Data = address;

@@ -20,15 +20,21 @@ namespace EBSApi.Controllers
         public async Task<IActionResult> GetTariffByIdAsync(int tariffId, CancellationToken cancellationToken)
         {
             Response<Tariff> response = await _tariffQueries.GetTariffByIdAsync(tariffId);
+
+            if (response.IsSuccess == false)
+                return BadRequest(response);
             if (response.Data == null)
                 return NotFound();
             return Ok(response);
         }
 
-        [HttpGet("{providerId}/{year}/{month}/")]
-        public async Task<IActionResult> GetLatesTariffsAsync(int year, int month, int providerId)
+        [HttpGet]
+        public async Task<IActionResult> GetLatestTariffsAsync(int year, int month, int providerId)
         {
             Response<IEnumerable<Tariff>> response = await _tariffQueries.GetLatestTariffsByMonthAsync(year, month, providerId);
+
+            if (response.IsSuccess == false)
+                return BadRequest(response);
             if (response.Data == null || !response.Data.Any())
                 return NotFound();
             return Ok(response);
