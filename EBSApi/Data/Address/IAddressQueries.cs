@@ -9,5 +9,6 @@ namespace EBSApi.Data
         public Task<Response<IEnumerable<Address>>> GetAddressesProviderAsync(int providerId);
         public Task<Response<IEnumerable<Address>>> GetAddressesUserAsync(int userId);
         public Task<Response<Address>> GetAddressAsync(int addressId);
+        public Task<Response<Address>> CreateAddressAsync(Address address);
     }
 }

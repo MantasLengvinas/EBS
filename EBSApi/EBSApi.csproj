@@ -20,12 +20,10 @@
     <None Remove="Microsoft.AspNetCore.Authentication.JwtBearer" />
     <None Remove="Models\" />
     <None Remove="Services\" />
-    <None Remove="Options\" />
   </ItemGroup>
 
   <ItemGroup>
     <Folder Include="Services\" />
-    <Folder Include="Options\" />
   </ItemGroup>
 
   <ItemGroup>

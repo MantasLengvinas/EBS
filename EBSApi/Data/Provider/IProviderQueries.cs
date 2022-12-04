@@ -7,5 +7,6 @@ namespace EBSApi.Data
     {
         public Task<Response<Provider>> GetProviderAsync(int providerId);
         public Task<Response<IEnumerable<Provider>>> GetAllProvidersAsync();
+        public Task<Response<Provider>> CreateProviderAsync(Provider provider);
     }
 }

@@ -6,5 +6,6 @@
         public string? FullAddress { get; set; }
         public int UserId { get; set; }
         public int ProviderId { get; set; }
+        public string? ProviderName { get; set; }
     }
 }

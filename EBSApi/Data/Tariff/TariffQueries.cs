@@ -47,6 +47,7 @@ namespace EBSApi.Data
                         ErrorMessage = $"SQL exception occured with the return value of {returnValue}",
                         StatusCode = 400
                     };
+                    return response;
                 }
 
                 response.Data = tariff;
@@ -95,6 +96,7 @@ namespace EBSApi.Data
                         ErrorMessage = $"SQL exception occured with the return value of {returnValue}",
                         StatusCode = 400
                     };
+                    return response;
                 }
 
                 response.Data = tariffs;

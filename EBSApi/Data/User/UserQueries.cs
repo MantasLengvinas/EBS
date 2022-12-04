@@ -90,6 +90,61 @@ namespace EBSApi.Data
                 return response;
             }
         }
+        public async Task<Response<User>> CreateUserAsync(User user)
+        {
+            DynamicParameters parameters = new DynamicParameters();
+            Response<User> response = new Response<User>();
 
+            parameters.Add(
+                "@return_value",
+                dbType: DbType.Int32,
+                direction: ParameterDirection.ReturnValue); 
+
+            parameters.Add(
+                "@fullName", user.FullName,
+                dbType: DbType.String,
+                direction: ParameterDirection.Input);
+
+            parameters.Add(
+                "@balance", user.Balance,
+                dbType: DbType.Double,
+                direction: ParameterDirection.Input);
+
+            parameters.Add(
+                "@balance", user.Balance,
+                dbType: DbType.Double,
+                direction: ParameterDirection.Input);
+            
+            parameters.Add(
+                "@business", user.Business,
+                dbType: DbType.Boolean,
+                direction: ParameterDirection.Input);
+
+            parameters.Add(
+                "@clientId", user.ClientId,
+                dbType: DbType.Int32,
+                direction: ParameterDirection.Input);
+
+            using (IDbConnection connection = _utility.CreateConnection())
+            {
+                user.UserId = (await connection.QueryAsync<int>("dbo.createUser",
+                    parameters,
+                    commandType: CommandType.StoredProcedure)).FirstOrDefault();
+                int returnValue = parameters.Get<int>("@return_value");
+
+                if (returnValue != 0)
+                {
+                    response.Error = new Error
+                    {
+                        ErrorMessage = $"SQL exception occured with the return value of {returnValue}",
+                        StatusCode = 400
+                    };
+                }
+
+                response.Data = user;
+                response.IsSuccess = true;
+                return response;
+            }
+        }
     }
 }

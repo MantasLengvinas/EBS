@@ -48,6 +48,7 @@ namespace EBSApi.Data
                         ErrorMessage = $"SQL exception occured with the return value of {returnValue}",
                         StatusCode = 400
                     };
+                    return response;
                 }
 
                 response.Data = provider;
@@ -82,9 +83,52 @@ namespace EBSApi.Data
                         ErrorMessage = $"SQL exception occured with the return value of {returnValue}",
                         StatusCode = 400
                     };
+                    return response;
                 }
 
                 response.Data = providers;
+                response.IsSuccess = true;
+                return response;
+            }
+        }
+
+        public async Task<Response<Provider>> CreateProviderAsync(Provider provider)
+        {
+            DynamicParameters parameters = new DynamicParameters();
+            Response<Provider> response = new Response<Provider>();
+
+            parameters.Add(
+                "@return_value",
+                dbType: DbType.Int32,
+                direction: ParameterDirection.ReturnValue); 
+            
+            parameters.Add(
+                 "@providerName", provider.ProviderName,
+                 dbType: DbType.String,
+                 direction: ParameterDirection.Input);
+
+            using (var connection = _utility.CreateConnection())
+            {
+                provider.ProviderId = (await connection
+                    .QueryAsync<int>(
+                        "dbo.createProvider",
+                        parameters,
+                        commandType: CommandType.StoredProcedure))
+                        .FirstOrDefault();
+
+                int returnValue = parameters.Get<int>("@return_value");
+
+                if (returnValue != 0)
+                {
+                    response.Error = new Error
+                    {
+                        ErrorMessage = $"SQL exception occured with the return value of {returnValue}",
+                        StatusCode = 400
+                    };
+                    return response;
+                }
+
+                response.Data = provider;
                 response.IsSuccess = true;
                 return response;
             }
