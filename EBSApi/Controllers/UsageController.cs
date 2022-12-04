@@ -89,6 +89,18 @@ namespace EBSApi.Controllers
             return Ok(response);
         }
 
+        [HttpGet("history")]
+        public async Task<IActionResult> GetAddressHistoryAsync(int id, CancellationToken cancellationToken)
+        {
+            Response<PaymentDto> response = await _usageQueries.GetAddressUnpaidUsagesAsync(id, true);
+
+            if (response.IsSuccess == false)
+                return BadRequest(response);
+            if (response.Data == null || !response.Data.Usages.Any())
+                return NotFound();
+            return Ok(response);
+        }
+
         [HttpPut("paid/{id}")]
         public async Task<IActionResult> SetUsagePaidAsync(int id, CancellationToken cancellationToken)
         {

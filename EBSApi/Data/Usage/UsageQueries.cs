@@ -193,7 +193,7 @@ namespace EBSApi.Data
             }
         }
 
-        public async Task<Response<PaymentDto>> GetAddressUnpaidUsagesAsync(int id)
+        public async Task<Response<PaymentDto>> GetAddressUnpaidUsagesAsync(int id, bool history = false)
         {
             DynamicParameters parameters = new DynamicParameters();
             Response<PaymentDto> response = new Response<PaymentDto>();
@@ -210,32 +210,64 @@ namespace EBSApi.Data
 
             using (IDbConnection connection = _utility.CreateConnection())
             {
-                SqlMapper.GridReader res = await connection
-                    .QueryMultipleAsync(
-                        "dbo.getAddressUnpaidUsages",
-                        parameters,
-                        commandType: CommandType.StoredProcedure);
-
-                response.Data = new PaymentDto
+                if (!history)
                 {
-                    Usages = await res.ReadAsync<Usage>(),
-                    PaymentSum = (await res.ReadAsync<double>()).FirstOrDefault()
-                };
+                    SqlMapper.GridReader res = await connection
+                        .QueryMultipleAsync(
+                            "dbo.getAddressUnpaidUsages",
+                            parameters,
+                            commandType: CommandType.StoredProcedure);
 
-                int returnValue = parameters.Get<int>("@return_value");
+                    response.Data = new PaymentDto
+                    {
+                        Usages = await res.ReadAsync<Usage>(),
+                        PaymentSum = (await res.ReadAsync<double>()).FirstOrDefault()
+                    };
 
-                 if (returnValue != 0)
-                 {
-                     response.Error = new Error
-                     {
-                         ErrorMessage = $"SQL exception occured with the return value of {returnValue}",
-                         StatusCode = 400
-                     };
-                     return response;
-                 }
+                    int returnValue = parameters.Get<int>("@return_value");
 
-                response.IsSuccess = true;
-                return response;
+                    if (returnValue != 0)
+                    {
+                        response.Error = new Error
+                        {
+                            ErrorMessage = $"SQL exception occured with the return value of {returnValue}",
+                            StatusCode = 400
+                        };
+                        return response;
+                    }
+
+                    response.IsSuccess = true;
+                    return response;
+                }
+                else
+                {
+                    SqlMapper.GridReader res = await connection
+                        .QueryMultipleAsync(
+                            "dbo.getAddressPaymentHistory",
+                            parameters,
+                            commandType: CommandType.StoredProcedure);
+
+                    response.Data = new PaymentDto
+                    {
+                        Usages = await res.ReadAsync<Usage>(),
+                        PaymentSum = (await res.ReadAsync<double>()).FirstOrDefault()
+                    };
+
+                    int returnValue = parameters.Get<int>("@return_value");
+
+                    if (returnValue != 0)
+                    {
+                        response.Error = new Error
+                        {
+                            ErrorMessage = $"SQL exception occured with the return value of {returnValue}",
+                            StatusCode = 400
+                        };
+                        return response;
+                    }
+
+                    response.IsSuccess = true;
+                    return response;
+                }
             }
         }
 
