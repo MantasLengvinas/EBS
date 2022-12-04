@@ -41,7 +41,7 @@
 
         @foreach (var address in Addresses)
         {
-            <ActionBox @key="address.AddressId" ID="@address.AddressId" Address="@address.FullAddress" Provider="@address.Provider" Business="@UserStore.Business" />
+            <ActionBox @key="address.AddressId" ID="@address.AddressId" Address="@address.FullAddress" Provider="@address.ProviderName" Business="@UserStore.Business" />
         }
 
     </div>
