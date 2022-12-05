@@ -34,14 +34,14 @@
                     </span>
                 </div>
                 <div class="col-md-4 actions">
-                    <button class="btn action-btn" data-toggle="modal" data-target="#addAddress">Pridėti naują</button>
+                    <button @onclick='(() => Navigation.NavigateTo("profile"))' class="btn action-btn">Pridėti objektą</button>
                 </div>
             </div>
         }
 
         @foreach (var address in Addresses)
         {
-            <ActionBox @key="address.AddressId" ID="@address.AddressId" Address="@address.FullAddress" Provider="@address.ProviderName" Business="@UserStore.Business" />
+            <ActionBox @key="address.AddressId" ID="@address.AddressId" Address="@address.FullAddress" ProviderID="@address.ProviderId" Provider="@address.ProviderName" Business="@UserStore.Business" />
         }
 
     </div>

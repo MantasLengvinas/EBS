@@ -1,6 +1,6 @@
 ﻿@page "/profile"
 
-<AddAddress @ref="AddressModal" />
+<AddAddress @ref="AddressModal" UserId="@UserStore.UserId" />
 
 <AuthorizeView>
 
@@ -14,7 +14,6 @@
                     <span class="font-weight-bold">@UserStore.FullName</span>
                     <span class="text-black-50">@context.User.Identity.Name</span>
                     <span class="mt-5">Balansas: <b>@UserStore.Balance</b> EUR</span>
-                    <button class="btn action-btn mt-1">Pridėti pinigų</button>
                     <span> </span>
                 </div>
             </div>
@@ -59,11 +58,6 @@
                                         </tr>
                                     </tbody>
                                 </table>
-                                <div class="action-box-actions">
-                                    <button class="btn btn-danger">
-                                        Pašalinti
-                                    </button>
-                                </div>
                             </div>
                         }
                     </div>
@@ -72,7 +66,7 @@
             <div class="col-md-3">
                 <div class="p-3 py-5">
                     <div class="d-flex justify-content-between align-items-center"><span>Profilio valdymas</span></div><br>
-                    <div class="col-md-12">
+                    @*<div class="col-md-12">
                         <div class="form-group mb-4">
                             <label for="provider">Paskyra</label>
                             <select class="form-select">
@@ -82,13 +76,13 @@
                     </div>
                     <div class="col-md-12">
                         <button class="btn action-btn">Pridėti naują paskyrą</button>
-                    </div> <br>
+                    </div> <br>*@
                     <div class="col-md-12">
                         <button @onclick="AddressModal.Open" class="btn action-btn">Pridėti objektą</button>
                     </div> <br>
-                    <div class="col-md-12">
+                    @*<div class="col-md-12">
                         <button class="btn btn-danger">Išjungti paskyrą</button>
-                    </div> <br>
+                    </div> <br>*@
                 </div>
             </div>
         </div>

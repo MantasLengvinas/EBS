@@ -1,10 +1,10 @@
 ﻿<div class="action-box row">
     <div class="action-box-header">
         <h5>
-            Didlaukio 59 711B
+            @Address
         </h5>
         <span>
-            Objekto kodas: 1
+            Objekto kodas: @ID
         </span>
     </div>
     <div class="action-box-content">
@@ -12,31 +12,42 @@
             <thead>
                 <tr>
                     <td>Data</td>
-                    <td>Rodmenys (nuo-iki)</td>
+                    <td>Sąnaudos</td>
                     <td>Tarifas</td>
                     <td>Suma</td>
                 </tr>
             </thead>
             <tbody>
-                <tr>
-                    <td><span class="record-text">2022-10-25</span></td>
-                    <td>
-                        <span class="record-text">100 kWh</span>
-                        <span class="record-text ml-4">120 kWh</span>
-                    </td>
-                    <td><span class="record-text">0.2</span></td>
-                    <td><span class="record-text">9</span></td>
-                </tr>
-                <tr>
-                    <td><span class="record-text">2022-10-27</span></td>
-                    <td>
-                        <span class="record-text">120 kWh</span>
-                        <span class="record-text ml-4">150 kWh</span>
-                    </td>
-                    <td><span class="record-text">0.22</span></td>
-                    <td><span class="record-text">50</span></td>
-                </tr>
+                @if(Usages.Count > 0)
+                {
+
+                    @foreach(var usage in Usages)
+                    {
+                        <tr>
+                            <td><span class="record-text">@usage.OnDate.ToString("yyyy-MM-dd")</span></td>
+                            <td>
+                                <span class="record-text">@usage.ElectricityDue kWh</span>
+                            </td>
+                            <td><span class="record-text">@Decimal.Round(usage.PaidTariff, 2) EUR / kWh</span></td>
+                            <td><span class="record-text">@Decimal.Round(usage.AmountDue, 2) EUR</span></td>
+                        </tr>
+                    }
+                }
+                else
+                {
+                    <tr>
+                        <td colspan="4"><span>Nerasta mokėjimų istorijos</span></td>
+                    </tr>
+                }
             </tbody>
+            <tfoot>
+                <tr>
+                    <td>Bendra sumokėta suma</td>
+                    <td></td>
+                    <td></td>
+                    <td><span class="record-text">@TotalSum EUR</span></td>
+                </tr>
+            </tfoot>
         </table>
     </div>
 </div>
