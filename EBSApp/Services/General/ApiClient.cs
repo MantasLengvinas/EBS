@@ -56,7 +56,7 @@ namespace EBSApp.Services.General
             }
         }
 
-        public async Task<Models.ApiResponse<T>> PostAsync<T, R>(string url, R data, CancellationToken cancelToken)
+        public async Task<ApiResponse<T>> PostAsync<T, R>(string url, R data, CancellationToken cancelToken)
             where T : class, new()
             where R : class, new()
         {
@@ -96,6 +96,26 @@ namespace EBSApp.Services.General
                 };
 
                 return apiResponse;
+            }
+        }
+
+        public async Task PutAsync(string url, CancellationToken cancelToken)
+        {
+            HttpStatusCode statusCode = HttpStatusCode.Processing;
+
+            try
+            {
+
+                HttpResponseMessage responseMessage = await _client.PutAsync(url, null, cancelToken);
+
+                statusCode = responseMessage.StatusCode;
+                responseMessage.EnsureSuccessStatusCode();
+
+
+            }
+            catch (Exception e)
+            {
+                throw new Exception(e.Message);
             }
         }
     }

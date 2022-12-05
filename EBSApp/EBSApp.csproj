@@ -22,7 +22,6 @@
     <Folder Include="Models\Authentication\" />
     <Folder Include="Services\" />
     <Folder Include="Services\General\" />
-    <Folder Include="Models\General\" />
     <Folder Include="Models\Dtos\" />
     <Folder Include="Models\Dtos\Responses\" />
     <Folder Include="Options\" />
@@ -30,6 +29,7 @@
     <Folder Include="Pages\ClientView\" />
     <Folder Include="wwwroot\images\icon\" />
     <Folder Include="Pages\Billing\" />
+    <Folder Include="Models\Domain\" />
   </ItemGroup>
   <ItemGroup>
     <None Remove="Serilog" />
@@ -40,7 +40,6 @@
     <None Remove="Models\Authentication\" />
     <None Remove="Services\" />
     <None Remove="Services\General\" />
-    <None Remove="Models\General\" />
     <None Remove="Newtonsoft.Json" />
     <None Remove="Models\Dtos\" />
     <None Remove="Models\Dtos\Responses\" />
@@ -48,6 +47,7 @@
     <None Remove="Shared\Components\" />
     <None Remove="Pages\ClientView\" />
     <None Remove="Pages\Billing\" />
+    <None Remove="Models\Domain\" />
   </ItemGroup>
   <ItemGroup>
     <PackageReference Include="Serilog.Sinks.Console" Version="4.1.0" />

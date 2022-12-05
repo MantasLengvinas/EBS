@@ -14,7 +14,7 @@
             <div class="col-md-12">
                 <div class="form-group m-1">
                     <label for="address">Adresas</label>
-                    <input type="text" class="form-control" id="address">
+                    <input @bind="Address" type="text" class="form-control" id="address">
                 </div>
             </div>
         </div>
@@ -22,15 +22,19 @@
             <div class="col-md-12">
                 <div class="form-group m-1 mb-3">
                     <label for="provider">Tiekėjas</label>
-                    <select class="form-select">
+                    <select @bind="ProviderId" class="form-select">
                         <option></option>
+                        @foreach(var provider in Providers)
+                        {
+                            <option value="@provider.ProviderId">@provider.ProviderName</option>
+                        }
                     </select>
                 </div>
             </div>
         </div>
         <div class="row" style="margin-top: 2rem;">
             <div class="col-md-12 d-flex justify-content-end">
-                <button class="btn action-btn">Išsaugoti</button>
+                <button @onclick="AddNewAddress" class="btn action-btn">Išsaugoti</button>
             </div>
         </div>
     </div>

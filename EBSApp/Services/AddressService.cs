@@ -20,6 +20,11 @@ namespace EBSApp.Services
             
             return await _apiClient.GetAsync<List<GetAddressResponseDto>>($"api/address/user/{userId}");
         }
+
+        public async Task AddNewAddress(GetAddressResponseDto address)
+        {
+            await _apiClient.PostAsync<GetAddressResponseDto, GetAddressResponseDto>("api/address", address);
+        }
     }
 }
 

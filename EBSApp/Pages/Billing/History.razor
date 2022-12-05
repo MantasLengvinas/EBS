@@ -5,15 +5,22 @@
         <div class="col-md-8">
             <h4>Mokėjimų istorija</h4>
         </div>
-        <div class="col-md-4">
+        @*<div class="col-md-4">
             <label class="labels">
                 Vartotojas
             </label>
             <select class="select ml-1">
                 <option>Mantas Lengvinas</option>
             </select>
-        </div>
+        </div>*@
     </div>
-    <HistoryTable @key="1" />
-    <HistoryTable @key="2" />
+
+    @if (Addresses != null)
+    {
+        foreach (var address in Addresses)
+        {
+            <HistoryTable @key="address.AddressId" Address="@address.FullAddress" ID="@address.AddressId" />
+        }
+    }
+
 </div>

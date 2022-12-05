@@ -59,7 +59,8 @@ builder.Services.AddScoped<UserStore>();
 
 builder.Services.AddScoped<IAddressService, AddressService>();
 builder.Services.AddScoped<IProviderService, ProviderService>();
-
+builder.Services.AddScoped<IUsageService, UsageService>();
+builder.Services.AddScoped<ITariffService, TariffService>();
 
 var app = builder.Build();
 

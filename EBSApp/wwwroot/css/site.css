@@ -8,6 +8,15 @@ h1:focus {
     outline: none;
 }
 
+.gray {
+    background-color: #c5c5c5 !important;
+    margin-right: 1.25rem;
+}
+
+.gray:hover {
+    background-color: #d5d5d5 !important;
+}
+
 h1, h2, h3, h4, h5, h6, span, p, a {
     color: #646464;
 }
@@ -238,7 +247,7 @@ h1, h2, h3, h4, h5, h6, span, p, a {
 
     .record-input > input {
         border: none;
-        width: 50px;
+        width: 100px;
         padding: 0.25em 0;
         text-align: center;
         border-top-left-radius: 5px;
