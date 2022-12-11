@@ -37,7 +37,10 @@ namespace EBSApp.Pages
             }
 
             await HttpContext.SignInAsync(result.Principal);
-            return Redirect("./");
+            if (userLogin.Email == "admin@ebs.lt")
+                return Redirect("./users");
+            else
+                return Redirect("./");
         }
     }
 }

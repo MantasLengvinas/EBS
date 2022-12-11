@@ -42,5 +42,15 @@ namespace EBSApi.Controllers
                 return NotFound();
             return Ok(response);
         }
+
+        [HttpDelete("{id}")]
+        public async Task<IActionResult> DeleteUserAsync(int id, CancellationToken cancellationToken)
+        {
+            int returnValue = await _userQueries.DeleteUserAsync(id);
+            if (returnValue != 0)
+                return BadRequest();
+
+            return Ok();
+        }
     }
 }

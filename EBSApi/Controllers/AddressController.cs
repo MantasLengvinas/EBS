@@ -75,5 +75,15 @@ namespace EBSApi.Controllers
                 return NotFound();
             return Ok(response);
         }
+
+        [HttpDelete("{addressId}")]
+        public async Task<IActionResult> DeleteAddressAsync(int addressId, CancellationToken cancellationToken)
+        {
+            int response = await _addressQueries.DeleteAddressAsync(addressId);
+
+            if (response != 0)
+                return BadRequest();
+            return Ok();
+        }
     }
 }

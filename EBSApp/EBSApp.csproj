@@ -30,6 +30,7 @@
     <Folder Include="wwwroot\images\icon\" />
     <Folder Include="Pages\Billing\" />
     <Folder Include="Models\Domain\" />
+    <Folder Include="Pages\Admin\" />
   </ItemGroup>
   <ItemGroup>
     <None Remove="Serilog" />
@@ -48,6 +49,7 @@
     <None Remove="Pages\ClientView\" />
     <None Remove="Pages\Billing\" />
     <None Remove="Models\Domain\" />
+    <None Remove="Pages\Admin\" />
   </ItemGroup>
   <ItemGroup>
     <PackageReference Include="Serilog.Sinks.Console" Version="4.1.0" />

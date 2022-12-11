@@ -1,0 +1,78 @@
+﻿@page "/addresses"
+@inject EBSApp.Services.IAddressService AddressService
+@inject NavigationManager Navigation
+@inject IJSRuntime JS
+
+<div class="container">
+    <div class="action-box row">
+        <div class="action-box-header">
+            <h5>
+                Adresai
+            </h5>
+        </div>
+        <div class="action-box-content">
+            <table class="records-table">
+                <thead>
+                    <tr>
+                        <td>Objekto ID</td>
+                        <td>Adresas</td>
+                        <td>Tiekėjas</td>
+                        <td>Kliento vardas ir pavardė</td>
+                        <td>Veiksmai</td>
+                    </tr>
+                </thead>
+                <tbody>
+                    @if (AddressesData.Count > 0)
+                    {
+
+                        @foreach (var address in AddressesData)
+                        {
+                            <tr>
+                                <td><span class="record-text">@address.AddressId</span></td>
+                                <td>
+                                    <span class="record-text">@address.FullAddress</span>
+                                </td>
+                                <td><span class="record-text">@address.ProviderName</span></td>
+                                <td><span class="record-text">@address.UserFullName</span></td>
+                                <td>
+                                    <button @onclick="() => DeleteAddress(address.AddressId)" class="btn btn-danger">Ištrinti</button>
+                                </td>
+                            </tr>
+                        }
+                    }
+                    else
+                    {
+                        <tr>
+                            <td colspan="4"><span>Nerasta mokėjimų istorijos</span></td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+
+
+@code{
+
+    List<GetAddressResponseDto> AddressesData = new();
+
+    protected override async Task OnInitializedAsync()
+    {
+        EBSApp.Models.ApiResponse<List<GetAddressResponseDto>> res = await AddressService.GetAllAddressesAsync();
+
+        if (res.IsSuccess)
+            AddressesData = res.Data;
+    }
+
+    async void DeleteAddress(int id)
+    {
+        bool confirmed = await JS.InvokeAsync<bool>("confirm", "Are tikrai norite ištrinti?");
+        if (confirmed)
+        {
+            await AddressService.DeleteAddress(id);
+            Navigation.NavigateTo(Navigation.Uri, true);
+        }
+
+    }
+}

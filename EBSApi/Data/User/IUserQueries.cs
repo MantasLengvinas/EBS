@@ -7,7 +7,7 @@ namespace EBSApi.Data
     {
         public Task<Response<IEnumerable<User>>> GetAllUsersAsync();
         public Task<Response<User>> GetUserAsync(int id);
-
+        Task<int> DeleteUserAsync(int id);
         public Task<Response<User>> CreateUserAsync(User user);
     }
 }

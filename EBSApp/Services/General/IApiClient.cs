@@ -9,5 +9,6 @@ namespace EBSApp.Services.General
             where T : class, new()
             where R : class, new();
         Task PutAsync(string url, CancellationToken cancelToken = default);
+        Task DeleteAsync(string url, CancellationToken cancelToken = default);
     }
 }
