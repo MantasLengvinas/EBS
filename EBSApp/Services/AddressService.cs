@@ -2,6 +2,7 @@
 using EBSApp.Models;
 using EBSApp.Models.Dtos;
 using EBSApp.Models.Dtos.Responses;
+using EBSApp.Pages.Admin;
 using EBSApp.Services.General;
 
 namespace EBSApp.Services
@@ -15,6 +16,11 @@ namespace EBSApp.Services
             _apiClient = apiClient ?? throw new ArgumentNullException(nameof(apiClient));
         }
 
+        public async Task<ApiResponse<List<GetAddressResponseDto>>> GetAllAddressesAsync()
+        {
+            return await _apiClient.GetAsync<List<GetAddressResponseDto>>($"api/address");
+        }
+
         public async Task<ApiResponse<List<GetAddressResponseDto>>> GetUserAddresses(string userId)
         {
             
@@ -24,6 +30,11 @@ namespace EBSApp.Services
         public async Task AddNewAddress(GetAddressResponseDto address)
         {
             await _apiClient.PostAsync<GetAddressResponseDto, GetAddressResponseDto>("api/address", address);
+        }
+
+        public async Task DeleteAddress(int id)
+        {
+            await _apiClient.DeleteAsync($"api/address/{id}");
         }
     }
 }

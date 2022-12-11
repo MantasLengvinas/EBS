@@ -6,11 +6,24 @@
             <h1>LOGO</h1>
         </div>
         <div class="col-md-6">
-            <ul class="top-menu-items" id="top-menu-navigation">
-                <li @onclick="() => ChangeIndex(0)" class="@(ActiveIndex == 0 ? "active" : null)"><NavLink href="./">Deklaravimas ir mokėjimas</NavLink></li>
-                <li @onclick="() => ChangeIndex(1)" class="@(ActiveIndex == 1 ? "active" : null)"><NavLink href="./history">Istorija</NavLink></li>
-                @*<li @onclick="() => ChangeIndex(2)" class="@(ActiveIndex == 2 ? "active" : null)"><NavLink>Ataskaitos</NavLink></li>*@
-            </ul>
+            <AuthorizeView>
+                @if (context.User.Identity.Name == "admin@ebs.lt")
+                {
+                    <ul class="top-menu-items" id="top-menu-navigation">
+                        <li @onclick="() => ChangeIndex(0)" class="@(ActiveIndex == 0 ? "active" : null)"><NavLink href="./users">Vartotojai</NavLink></li>
+                        <li @onclick="() => ChangeIndex(1)" class="@(ActiveIndex == 1 ? "active" : null)"><NavLink href="./addresses">Addresai</NavLink></li>
+                        @*<li @onclick="() => ChangeIndex(2)" class="@(ActiveIndex == 2 ? "active" : null)"><NavLink>Ataskaitos</NavLink></li>*@
+                    </ul>
+                }
+                else
+                {
+                    <ul class="top-menu-items" id="top-menu-navigation">
+                        <li @onclick="() => ChangeIndex(0)" class="@(ActiveIndex == 0 ? "active" : null)"><NavLink href="./">Deklaravimas ir mokėjimas</NavLink></li>
+                        <li @onclick="() => ChangeIndex(1)" class="@(ActiveIndex == 1 ? "active" : null)"><NavLink href="./history">Istorija</NavLink></li>
+                        @*<li @onclick="() => ChangeIndex(2)" class="@(ActiveIndex == 2 ? "active" : null)"><NavLink>Ataskaitos</NavLink></li>*@
+                    </ul>
+                }
+            </AuthorizeView>
         </div>
         <div class="col-md-4 d-flex justify-content-end align-items-center">
             <AuthorizeView>

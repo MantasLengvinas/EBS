@@ -177,6 +177,35 @@ namespace EBSApi.Data
             }
         }
 
+        public async Task<int> DeleteAddressAsync(int addressId)
+        {
+            DynamicParameters parameters = new DynamicParameters();
+            Response<Address> response = new Response<Address>();
+
+            parameters.Add(
+                "@return_value",
+                dbType: DbType.Int32,
+                direction: ParameterDirection.ReturnValue);
+            parameters.Add(
+                "@id", addressId,
+                dbType: DbType.Int32,
+                direction: ParameterDirection.Input);
+
+            using (IDbConnection connection = _utility.CreateConnection())
+            {
+                await connection
+                    .ExecuteAsync(
+                        "dbo.deleteAddress",
+                        parameters,
+                        commandType: CommandType.StoredProcedure);
+
+                int returnValue = parameters.Get<int>("@return_value");
+
+                return returnValue;
+
+            }
+        }
+
         public async Task<Response<Address>> CreateAddressAsync(Address address)
         {
             DynamicParameters parameters = new DynamicParameters();

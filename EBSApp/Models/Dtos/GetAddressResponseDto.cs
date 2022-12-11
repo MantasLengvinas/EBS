@@ -6,6 +6,7 @@ namespace EBSApp.Models.Dtos
         public int AddressId { get; set; }
         public string? FullAddress { get; set; }
         public int UserId { get; set; }
+        public string UserFullName { get; set; }
         public string ProviderName { get; set; }
         public int ProviderId { get; set; }
         public bool Active { get; set; }

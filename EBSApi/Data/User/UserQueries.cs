@@ -90,6 +90,46 @@ namespace EBSApi.Data
                 return response;
             }
         }
+
+        public async Task<int> DeleteUserAsync(int id)
+        {
+            DynamicParameters parameters = new DynamicParameters();
+            Response<User> response = new Response<User>();
+
+            parameters.Add(
+                "@return_value",
+                dbType: DbType.Int32,
+                direction: ParameterDirection.ReturnValue);
+            parameters.Add(
+                "@id", id,
+                dbType: DbType.Int32,
+                direction: ParameterDirection.Input);
+
+            try
+            {
+                using (IDbConnection connection = _utility.CreateConnection())
+                {
+
+                    await connection
+                        .ExecuteAsync(
+                            "dbo.deleteUser",
+                            parameters,
+                            commandType: CommandType.StoredProcedure);
+
+                    int returnValue = parameters.Get<int>("@return_value");
+
+                    return returnValue;
+                }
+            }
+            catch(Exception e)
+            {
+                Console.WriteLine(e);
+                return -1;
+            }
+
+
+        }
+
         public async Task<Response<User>> CreateUserAsync(User user)
         {
             DynamicParameters parameters = new DynamicParameters();
