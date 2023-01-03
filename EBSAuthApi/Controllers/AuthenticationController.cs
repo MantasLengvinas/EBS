@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Net;
 using System.Threading.Tasks;
 using EBSAuthApi.Models;
 using EBSAuthApi.Models.Dtos.Requests;
@@ -27,6 +28,8 @@ namespace EBSAuthApi.Controllers.Authentication
         {
 
             AuthResponseDto result = await _authService.LoginUserAsync(user, cancelToken);
+            IPAddress address = Request.HttpContext.Connection.RemoteIpAddress;
+            Console.WriteLine(address.MapToIPv4());
 
             return Ok(result);
         }
