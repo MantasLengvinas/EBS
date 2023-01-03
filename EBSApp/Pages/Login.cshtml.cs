@@ -22,6 +22,9 @@ namespace EBSApp.Pages
 
         public async Task<IActionResult> OnPostAsync()
         {
+            var address = HttpContext.Connection.RemoteIpAddress;
+            Console.WriteLine(address.MapToIPv4());
+
             UserLogin userLogin = new();
             userLogin.Email = Request.Form["email"];
             userLogin.Password = Request.Form["password"];
