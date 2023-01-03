@@ -28,7 +28,7 @@ namespace EBSAuthApi.Controllers.Authentication
         {
 
             AuthResponseDto result = await _authService.LoginUserAsync(user, cancelToken);
-            IPAddress address = Request.HttpContext.Connection.RemoteIpAddress;
+            IPAddress address = HttpContext.Connection.RemoteIpAddress;
             Console.WriteLine(address.MapToIPv4());
 
             return Ok(result);
