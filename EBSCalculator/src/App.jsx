@@ -1,5 +1,5 @@
 import "./App.css";
-import React, { useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import { ThemeProvider, createTheme } from "@mui/material/styles";
 import {
   Box,
@@ -47,20 +47,20 @@ export default function App() {
   const [electricityUsageEvening, setElectricityUsageEvening] = useState(100);
   const [electricityUsageNight, setElectricityUsageNight] = useState(100);
   const [timezonePlan, setTimezonePlan] = useState(1);
+  const [price, setPrice] = useState(0);
 
   const fetchRatesData = (id) => {
-    fetch(`https://localhost:44348/api/tariff/prognosis?providerId=${id}`)
+    fetch(`${import.meta.env.VITE_BASE_URL}/tariff/prognosis?providerId=${id}`)
       .then((response) => {
         return response.json();
       })
       .then((data) => {
         setRates(data.data);
-        console.log(data.data);
       });
   };
 
   const fetchProvidersData = () => {
-    fetch("https://localhost:44348/api/provider")
+    fetch(`${import.meta.env.VITE_BASE_URL}/provider`)
       .then((response) => {
         return response.json();
       })
@@ -72,6 +72,57 @@ export default function App() {
   useEffect(() => {
     fetchProvidersData();
   }, []);
+
+  useEffect(() => {
+    setTimeout(() => {
+      setPrice(
+        calculatePrice(
+          electricityUsageAmbiguous,
+          electricityUsageDay,
+          electricityUsageEvening,
+          electricityUsageNight,
+          timezonePlan
+        )
+      );
+    }, 100);
+  }, [
+    electricityUsageAmbiguous,
+    electricityUsageDay,
+    electricityUsageEvening,
+    electricityUsageNight,
+    timezonePlan,
+    rates,
+  ]);
+
+  function calculatePrice(
+    electricityUsageAmbiguous,
+    electricityUsageDay,
+    electricityUsageEvening,
+    electricityUsageNight,
+    timezonePlan
+  ) {
+    var sum = 0;
+    if (timezonePlan == 1) {
+      rates.forEach((rate) => {
+        sum += rate.rateAmbiguous * electricityUsageAmbiguous;
+      });
+    }
+    if (timezonePlan == 2) {
+      rates.forEach((rate) => {
+        sum += rate.rateDay * electricityUsageDay;
+        sum += rate.rateEvening * electricityUsageEvening;
+      });
+    }
+    if (timezonePlan == 3) {
+      rates.forEach((rate) => {
+        sum += rate.rateDay * electricityUsageDay;
+        sum += rate.rateEvening * electricityUsageEvening;
+        sum += rate.rateNight * electricityUsageNight;
+      });
+    }
+
+    return Math.round((sum + Number.EPSILON) * 100) / 100;
+  }
 
   return (
     <ThemeProvider theme={darkTheme}>
@@ -349,34 +400,14 @@ export default function App() {
               <Grid item>
                 <Grid
                   container
-                  className="text-sky-400"
+                  className="text-purple-400 font-bold text-xl"
                   direction="column"
                   alignItems="center"
                 >
-                  Šildymo sezonas
-                  <Grid item>TBC</Grid>
-                </Grid>
-              </Grid>
-              <Grid item>
-                <Grid
-                  container
-                  direction="column"
-                  className="text-orange-200"
-                  alignItems="center"
-                >
-                  Šiltasis sezonas
-                  <Grid item>TBC</Grid>
-                </Grid>
-              </Grid>
-              <Grid item>
-                <Grid
-                  container
-                  className="text-green-200"
-                  direction="column"
-                  alignItems="center"
-                >
-                  Vėsusis sezonas
-                  <Grid item>TBC</Grid>
+                  <Grid item id="sildymoKaina">
+                    {price}
+                  </Grid>
+                  € per metus, su PVM
                 </Grid>
               </Grid>
             </Grid>

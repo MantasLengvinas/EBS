@@ -29,7 +29,6 @@ builder.Services.AddSingleton(config =>
     return new SqlUtility(connectionString);
 });
 
-
 builder.Services.AddScoped<IUserQueries, UserQueries>();
 builder.Services.AddScoped<IAddressQueries, AddressQueries>();
 builder.Services.AddScoped<IProviderQueries, ProviderQueries>();
@@ -38,12 +37,13 @@ builder.Services.AddScoped<ITariffQueries, TariffQueries>();
 builder.Services.AddScoped<ITariffServices, TariffServices>();
 
 builder.Services.AddControllers();
+
 builder.Services.AddCors(options =>
 {
     options.AddPolicy("Localhost",
         policy =>
         {
-            policy.WithOrigins("http://127.0.0.1:5173", "http://localhost:5173");
+            policy.WithOrigins(builder.Configuration.GetSection("Origins").Get<string>().Split(","));
         });
 });
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
