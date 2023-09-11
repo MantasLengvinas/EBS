@@ -104,5 +104,51 @@ namespace EBSApi.Data
                 return response;
             }
         }
+
+        public async Task<Response<IEnumerable<Tariff>>> GetHistoricalTariffDataAsync(int providerId, bool isBusiness)
+        {
+            DynamicParameters parameters = new DynamicParameters();
+            Response<IEnumerable<Tariff>> response = new Response<IEnumerable<Tariff>>();
+
+            parameters.Add(
+                "@return_value",
+                dbType: DbType.Int32,
+                direction: ParameterDirection.ReturnValue);
+            parameters.Add(
+                "@providerId", providerId,
+                dbType: DbType.Int32,
+                direction: ParameterDirection.Input);
+            parameters.Add(
+                "@isBusiness", isBusiness,
+                dbType: DbType.Int32,
+                direction: ParameterDirection.Input);
+
+            using (IDbConnection connection = _utility.CreateConnection())
+            {
+
+                IEnumerable<Tariff> tariffs = (await connection
+                    .QueryAsync<Tariff>(
+                        "dbo.getHistoricTariffData",
+                        parameters,
+                        commandType: CommandType.StoredProcedure))
+                    .ToList();
+
+                int returnValue = parameters.Get<int>("@return_value");
+
+                if (returnValue != 0)
+                {
+                    response.Error = new Error
+                    {
+                        ErrorMessage = $"SQL exception occured with the return value of {returnValue}",
+                        StatusCode = 400
+                    };
+                    return response;
+                }
+
+                response.Data = tariffs;
+                response.IsSuccess = true;
+                return response;
+            }
+        }
     }
 }

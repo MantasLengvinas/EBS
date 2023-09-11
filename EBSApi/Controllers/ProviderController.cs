@@ -2,6 +2,7 @@
 using EBSApi.Data;
 using Microsoft.AspNetCore.Mvc;
 using EBSApi.Models.Dtos;
+using Microsoft.AspNetCore.Cors;
 
 namespace EBSApi.Controllers
 {
@@ -17,6 +18,7 @@ namespace EBSApi.Controllers
         }
 
         [HttpGet]
+        [EnableCors("Localhost")]
         public async Task<IActionResult> GetAllProvidersAsync(CancellationToken cancellationToken)
         {
             Response<IEnumerable<Provider>> response = await _providerQueries.GetAllProvidersAsync();
