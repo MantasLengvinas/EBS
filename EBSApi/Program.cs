@@ -1,6 +1,7 @@
 ﻿using EBSApi.Utility;
 using EBSApi.Data;
 using EBSApi.Options;
+using EBSApi.Services;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -33,8 +34,18 @@ builder.Services.AddScoped<IAddressQueries, AddressQueries>();
 builder.Services.AddScoped<IProviderQueries, ProviderQueries>();
 builder.Services.AddScoped<IUsageQueries, UsageQueries>();
 builder.Services.AddScoped<ITariffQueries, TariffQueries>();
+builder.Services.AddScoped<ITariffServices, TariffServices>();
 
 builder.Services.AddControllers();
+
+builder.Services.AddCors(options =>
+{
+    options.AddPolicy("Localhost",
+        policy =>
+        {
+            policy.WithOrigins(builder.Configuration.GetSection("Origins").Get<string>().Split(","));
+        });
+});
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
@@ -50,7 +61,7 @@ app.UseSwagger();
 app.UseSwaggerUI();
 
 app.UseHttpsRedirection();
-
+app.UseCors();
 app.MapControllers();
 
 app.Run();

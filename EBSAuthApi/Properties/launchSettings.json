@@ -12,7 +12,7 @@
     "EBSAuthApi": {
       "commandName": "Project",
       "launchBrowser": true,
-      "applicationUrl": "http://localhost:23243",
+      "applicationUrl": "http://localhost:5002",
       "environmentVariables": {
         "ASPNETCORE_ENVIRONMENT": "Development"
       }
