@@ -28,32 +28,29 @@ namespace EBSApi.Data
                 dbType: DbType.Int32,
                 direction: ParameterDirection.Input);
 
-            using (IDbConnection connection = _utility.CreateConnection())
-            {
-
-                Tariff tariff = (await connection
+            using IDbConnection connection = _utility.CreateConnection();
+            Tariff tariff = (await connection
                     .QueryAsync<Tariff>(
                         "dbo.getTariff",
                         parameters,
                         commandType: CommandType.StoredProcedure))
-                    .FirstOrDefault();
+                .FirstOrDefault();
 
-                int returnValue = parameters.Get<int>("@return_value");
+            int returnValue = parameters.Get<int>("@return_value");
 
-                if (returnValue != 0)
+            if (returnValue != 0)
+            {
+                response.Error = new Error
                 {
-                    response.Error = new Error
-                    {
-                        ErrorMessage = $"SQL exception occured with the return value of {returnValue}",
-                        StatusCode = 400
-                    };
-                    return response;
-                }
-
-                response.Data = tariff;
-                response.IsSuccess = true;
+                    ErrorMessage = $"SQL exception occurred with the return value of {returnValue}",
+                    StatusCode = 400
+                };
                 return response;
             }
+
+            response.Data = tariff;
+            response.IsSuccess = true;
+            return response;
         }
         public async Task<Response<IEnumerable<Tariff>>> GetLatestTariffsByMonthAsync(int year, int month, int providerId)
         {
@@ -77,32 +74,29 @@ namespace EBSApi.Data
                 dbType: DbType.Int32,
                 direction: ParameterDirection.Input);
 
-            using (IDbConnection connection = _utility.CreateConnection())
+            using IDbConnection connection = _utility.CreateConnection();
+
+            IEnumerable<Tariff> tariffs = await connection
+                .QueryAsync<Tariff>(
+                    "dbo.getLatestTariff",
+                    parameters,
+                    commandType: CommandType.StoredProcedure);
+
+            int returnValue = parameters.Get<int>("@return_value");
+
+            if (returnValue != 0)
             {
-
-                IEnumerable<Tariff> tariffs = (await connection
-                    .QueryAsync<Tariff>(
-                        "dbo.getLatestTariff",
-                        parameters,
-                        commandType: CommandType.StoredProcedure))
-                    .ToList();
-
-                int returnValue = parameters.Get<int>("@return_value");
-
-                if (returnValue != 0)
+                response.Error = new Error
                 {
-                    response.Error = new Error
-                    {
-                        ErrorMessage = $"SQL exception occured with the return value of {returnValue}",
-                        StatusCode = 400
-                    };
-                    return response;
-                }
-
-                response.Data = tariffs;
-                response.IsSuccess = true;
+                    ErrorMessage = $"SQL exception occurred with the return value of {returnValue}",
+                    StatusCode = 400
+                };
                 return response;
             }
+
+            response.Data = tariffs;
+            response.IsSuccess = true;
+            return response;
         }
 
         public async Task<Response<IEnumerable<Tariff>>> GetHistoricalTariffDataAsync(int providerId, bool isBusiness)
@@ -123,32 +117,29 @@ namespace EBSApi.Data
                 dbType: DbType.Int32,
                 direction: ParameterDirection.Input);
 
-            using (IDbConnection connection = _utility.CreateConnection())
+            using IDbConnection connection = _utility.CreateConnection();
+
+            IEnumerable<Tariff> tariffs = await connection
+                .QueryAsync<Tariff>(
+                    "dbo.getHistoricTariffData",
+                    parameters,
+                    commandType: CommandType.StoredProcedure);
+
+            int returnValue = parameters.Get<int>("@return_value");
+
+            if (returnValue != 0)
             {
-
-                IEnumerable<Tariff> tariffs = (await connection
-                    .QueryAsync<Tariff>(
-                        "dbo.getHistoricTariffData",
-                        parameters,
-                        commandType: CommandType.StoredProcedure))
-                    .ToList();
-
-                int returnValue = parameters.Get<int>("@return_value");
-
-                if (returnValue != 0)
+                response.Error = new Error
                 {
-                    response.Error = new Error
-                    {
-                        ErrorMessage = $"SQL exception occured with the return value of {returnValue}",
-                        StatusCode = 400
-                    };
-                    return response;
-                }
-
-                response.Data = tariffs;
-                response.IsSuccess = true;
+                    ErrorMessage = $"SQL exception occurred with the return value of {returnValue}",
+                    StatusCode = 400
+                };
                 return response;
             }
+
+            response.Data = tariffs;
+            response.IsSuccess = true;
+            return response;
         }
     }
 }
