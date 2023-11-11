@@ -24,7 +24,7 @@ namespace EBSAuthApi.Controllers.Authentication
         }
 
         [HttpPost("login")]
-        public async Task<IActionResult> AuthenticateUser(UserLogin user, CancellationToken cancelToken)
+        public async Task<IActionResult> AuthenticateUser(UserLoginDto user, CancellationToken cancelToken)
         {
 
             AuthResponseDto result = await _authService.LoginUserAsync(user, cancelToken);
@@ -35,7 +35,7 @@ namespace EBSAuthApi.Controllers.Authentication
         }
 
         [HttpPost("register")]
-        public async Task<IActionResult> RegisterClient(ClientRegister user, CancellationToken cancelToken)
+        public async Task<IActionResult> RegisterClient(UserRegistrationDto user, CancellationToken cancelToken)
         {
             AuthResponseDto result = await _authService.RegisterClientAsync(user, cancelToken);
 

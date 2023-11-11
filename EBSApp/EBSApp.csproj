@@ -30,7 +30,6 @@
     <Folder Include="wwwroot\images\icon\" />
     <Folder Include="Pages\Billing\" />
     <Folder Include="Models\Domain\" />
-    <Folder Include="Pages\Admin\" />
   </ItemGroup>
   <ItemGroup>
     <None Remove="Serilog" />

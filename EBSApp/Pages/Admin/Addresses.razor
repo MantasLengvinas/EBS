@@ -1,7 +1,6 @@
 ﻿@page "/addresses"
-@inject EBSApp.Services.IAddressService AddressService
-@inject NavigationManager Navigation
-@inject IJSRuntime JS
+
+@inherits AddressesBase
 
 <div class="container">
     <div class="action-box row">
@@ -22,10 +21,10 @@
                     </tr>
                 </thead>
                 <tbody>
-                    @if (AddressesData.Count > 0)
+                    @if (Addresses is not null && Addresses.Count > 0)
                     {
 
-                        @foreach (var address in AddressesData)
+                        @foreach (var address in Addresses)
                         {
                             <tr>
                                 <td><span class="record-text">@address.AddressId</span></td>
@@ -35,7 +34,7 @@
                                 <td><span class="record-text">@address.ProviderName</span></td>
                                 <td><span class="record-text">@address.UserFullName</span></td>
                                 <td>
-                                    <button @onclick="() => DeleteAddress(address.AddressId)" class="btn btn-danger">Ištrinti</button>
+                                    <button @onclick="async () => await DeleteAddressAsync(address.AddressId)" class="btn btn-danger">Ištrinti</button>
                                 </td>
                             </tr>
                         }
@@ -43,7 +42,7 @@
                     else
                     {
                         <tr>
-                            <td colspan="4"><span>Nerasta mokėjimų istorijos</span></td>
+                            <td colspan="5"><span>Nerasta mokėjimų istorijos</span></td>
                         </tr>
                     }
                 </tbody>
@@ -51,28 +50,3 @@
         </div>
     </div>
 </div>
-
-
-@code{
-
-    List<GetAddressResponseDto> AddressesData = new();
-
-    protected override async Task OnInitializedAsync()
-    {
-        EBSApp.Models.ApiResponse<List<GetAddressResponseDto>> res = await AddressService.GetAllAddressesAsync();
-
-        if (res.IsSuccess)
-            AddressesData = res.Data;
-    }
-
-    async void DeleteAddress(int id)
-    {
-        bool confirmed = await JS.InvokeAsync<bool>("confirm", "Are tikrai norite ištrinti?");
-        if (confirmed)
-        {
-            await AddressService.DeleteAddress(id);
-            Navigation.NavigateTo(Navigation.Uri, true);
-        }
-
-    }
-}
