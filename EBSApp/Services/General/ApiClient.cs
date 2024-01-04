@@ -119,23 +119,20 @@ namespace EBSApp.Services.General
             }
         }
 
-        public async Task DeleteAsync(string url, CancellationToken cancelToken)
+        public async Task<bool> DeleteAsync(string url, CancellationToken cancelToken)
         {
-            HttpStatusCode statusCode = HttpStatusCode.Processing;
-
             try
             {
 
                 HttpResponseMessage responseMessage = await _client.DeleteAsync(url, cancelToken);
 
-                statusCode = responseMessage.StatusCode;
                 responseMessage.EnsureSuccessStatusCode();
-
+                return true;
 
             }
             catch (Exception e)
             {
-                throw new Exception(e.Message);
+                return false;
             }
         }
     }

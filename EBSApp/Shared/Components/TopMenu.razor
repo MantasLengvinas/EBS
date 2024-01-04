@@ -1,4 +1,5 @@
-﻿@inject EBSApp.Models.UserStore UserStore
+﻿@using static EBSApp.Constants.NavigationConstants;
+@inject EBSApp.Models.UserStore UserStore
 
 <div class="topmenu container-fluid">
     <div class="row">
@@ -7,19 +8,19 @@
         </div>
         <div class="col-md-6">
             <AuthorizeView>
-                @if (context.User.Identity.Name == "admin@ebs.lt")
+                @if (context.User.IsInRole("Admin"))
                 {
                     <ul class="top-menu-items" id="top-menu-navigation">
-                        <li @onclick="() => ChangeIndex(0)" class="@(ActiveIndex == 0 ? "active" : null)"><NavLink href="./users">Vartotojai</NavLink></li>
-                        <li @onclick="() => ChangeIndex(1)" class="@(ActiveIndex == 1 ? "active" : null)"><NavLink href="./addresses">Addresai</NavLink></li>
+                        <li @onclick="() => ChangeIndex(NavigationIndexes.USERS)" class="@(ActiveIndex == NavigationIndexes.USERS ? "active" : null)"><NavLink href="./users">Vartotojai</NavLink></li>
+                        <li @onclick="() => ChangeIndex(NavigationIndexes.ADDRESSES)" class="@(ActiveIndex == NavigationIndexes.ADDRESSES ? "active" : null)"><NavLink href="./addresses">Addresai</NavLink></li>
                         @*<li @onclick="() => ChangeIndex(2)" class="@(ActiveIndex == 2 ? "active" : null)"><NavLink>Ataskaitos</NavLink></li>*@
                     </ul>
                 }
                 else
                 {
                     <ul class="top-menu-items" id="top-menu-navigation">
-                        <li @onclick="() => ChangeIndex(0)" class="@(ActiveIndex == 0 ? "active" : null)"><NavLink href="./">Deklaravimas ir mokėjimas</NavLink></li>
-                        <li @onclick="() => ChangeIndex(1)" class="@(ActiveIndex == 1 ? "active" : null)"><NavLink href="./history">Istorija</NavLink></li>
+                        <li @onclick="() => ChangeIndex(NavigationIndexes.DECLARATION)" class="@(ActiveIndex == NavigationIndexes.DECLARATION ? "active" : null)"><NavLink href="./">Deklaravimas ir mokėjimas</NavLink></li>
+                        <li @onclick="() => ChangeIndex(NavigationIndexes.HISTORY)" class="@(ActiveIndex == NavigationIndexes.HISTORY ? "active" : null)"><NavLink href="./history">Istorija</NavLink></li>
                         @*<li @onclick="() => ChangeIndex(2)" class="@(ActiveIndex == 2 ? "active" : null)"><NavLink>Ataskaitos</NavLink></li>*@
                     </ul>
                 }
