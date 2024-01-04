@@ -7,36 +7,30 @@ using EBSApp.Auth;
 using EBSApp.Services.General;
 using EBSAuthenticationHandler.Extensions;
 using Microsoft.AspNetCore.Authentication.Cookies;
-
-Log.Logger = (Serilog.ILogger)new LoggerConfiguration()
-    .WriteTo.Console()
-    .CreateLogger();
+using EBSApp.Options;
+using Microsoft.Extensions.Configuration;
+using EBSApp.Services;
 
 var builder = WebApplication.CreateBuilder(args);
 
-builder.Host.UseSerilog((context, config) =>
-{
-    _ = config.ReadFrom.Configuration(builder.Configuration);
-});
+string env = Environment.GetEnvironmentVariable("ASPNETCORE_ENVIRONMENT");
 
+if (env != Environments.Development)
+{
+    builder.Host.ConfigureAppConfiguration((hostingContext, config) =>
+    {
+        AppSettingsOptions paths = builder.Configuration
+                                    .GetSection(AppSettingsOptions.Position)
+                                    .Get<AppSettingsOptions>();
+
+        config.AddJsonFile(paths.Production,
+                            optional: false,
+                            reloadOnChange: true);
+    });
+}
 
 builder.Services.AddRazorPages();
 builder.Services.AddServerSideBlazor();
-
-builder.Services.AddLogging(config => config.AddSerilog());
-
-builder.Services.AddScoped<IApiClient, ApiClient>(config => {
-
-    HttpClient client = new();
-    string apiKey = builder.Configuration.GetValue<string>("EBSApiKey");
-
-    client.DefaultRequestHeaders.Add("X-API-KEY", apiKey);
-
-    return new ApiClient(client);
-
-});
-
-builder.Services.AddScoped<TokenStore>();
 
 builder.Services.AddEBSAuthentication(options =>
 {
@@ -47,6 +41,27 @@ builder.Services.AddEBSAuthentication(options =>
     options.ApiKey = builder.Configuration.GetValue<string>("Auth:ApiKey");
     options.TokenPublicSigningKey = builder.Configuration.GetValue<string>("Auth:SigningKey");
 });
+
+builder.Services.AddScoped<IApiClient, ApiClient>(config => {
+
+    HttpClient client = new();
+    string apiKey = builder.Configuration.GetValue<string>("EBSApiKey");
+
+    client.DefaultRequestHeaders.Add("X-API-KEY", apiKey);
+    client.BaseAddress = new Uri(builder.Configuration["EBSApi"]);
+
+    return new ApiClient(client);
+
+});
+
+builder.Services.AddScoped<TokenStore>();
+builder.Services.AddScoped<UserStore>();
+
+builder.Services.AddScoped<IAddressService, AddressService>();
+builder.Services.AddScoped<IProviderService, ProviderService>();
+builder.Services.AddScoped<IUsageService, UsageService>();
+builder.Services.AddScoped<ITariffService, TariffService>();
+builder.Services.AddScoped<IUsersService, UsersService>();
 
 var app = builder.Build();
 

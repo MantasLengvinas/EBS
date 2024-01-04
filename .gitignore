@@ -11,6 +11,8 @@
 *.userosscache
 *.sln.docstates
 
+.DS_Store
+
 appsettings.Development.json
 
 # User-specific files (MonoDevelop/Xamarin Studio)

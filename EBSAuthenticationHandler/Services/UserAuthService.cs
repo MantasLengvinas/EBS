@@ -37,6 +37,7 @@ namespace EBSAuthenticationHandler.Services
 
         public async Task<AuthenticateResult> LoginUser(object userCredentials)
         {
+
             string? errorMessage = null;
 
             if (userCredentials == null)
@@ -86,6 +87,85 @@ namespace EBSAuthenticationHandler.Services
             AuthenticationTicket ticket = new AuthenticationTicket(principal, authProperties, EBSAuthenticationDefaults.AuthenticationScheme);
 
             return AuthenticateResult.Success(ticket);
+        }
+
+        public async Task<AuthenticateResult> RegisterClient(object userCredentials)
+        {
+            string? errorMessage = null;
+
+            if (userCredentials == null)
+            {
+                errorMessage = "No user credentials provided";
+                return AuthenticateResult.Fail(errorMessage);
+            }
+
+            HttpRequestMessage message = new HttpRequestMessage(HttpMethod.Post, EBSAuthenticationDefaults.RegisterUrl);
+            message.Content = new StringContent(JsonConvert.SerializeObject(userCredentials), Encoding.UTF8, "application/json");
+
+            ClaimsPrincipal? principal = null;
+            AuthenticationProperties authProperties = new();
+
+            authProperties.IsPersistent = true;
+            authProperties.ExpiresUtc = DateTime.UtcNow.AddSeconds(_options.TokenExpirationInSeconds);
+
+            try
+            {
+                HttpResponseMessage response = await _client.SendAsync(message);
+
+                string content = await response.Content.ReadAsStringAsync();
+
+                AuthResponse? deserializedRespose = JsonConvert.DeserializeObject<AuthResponse>(content);
+
+                if (deserializedRespose == null)
+                    return AuthenticateResult.Fail("Unhandled authentication exception");
+
+                if (!deserializedRespose.IsSuccess)
+                {
+                    return AuthenticateResult.Fail(deserializedRespose.ErrorMessage);
+                }
+
+                principal = ValidateAuthResponse(deserializedRespose);
+
+                if (principal == null)
+                    return AuthenticateResult.Fail("Token is invalid");
+
+            }
+            catch (Exception)
+            {
+            }
+
+            if (principal == null)
+                return AuthenticateResult.Fail("Unhandled authentication exception");
+
+            AuthenticationTicket ticket = new AuthenticationTicket(principal, authProperties, EBSAuthenticationDefaults.AuthenticationScheme);
+
+            return AuthenticateResult.Success(ticket);
+        }
+
+        public async Task<bool> CompleteUserRegistration(object userInfo)
+        {
+
+            if (userInfo == null)
+            {
+                return false;
+            }
+
+            HttpRequestMessage message = new HttpRequestMessage(HttpMethod.Post, EBSAuthenticationDefaults.CompleteRegistrationUrl);
+            message.Content = new StringContent(JsonConvert.SerializeObject(userInfo), Encoding.UTF8, "application/json");
+
+            try
+            {
+                HttpResponseMessage response = await _client.SendAsync(message);
+
+                if (!response.IsSuccessStatusCode)
+                    return false;
+
+                return true;
+            }
+            catch (Exception)
+            {
+                return false;
+            }
         }
 
         private ClaimsPrincipal? ValidateAuthResponse(AuthResponse? authResponse)

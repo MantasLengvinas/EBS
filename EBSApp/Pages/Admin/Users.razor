@@ -1,0 +1,78 @@
+﻿@page "/users"
+@inject EBSApp.Services.IUsersService UsersService
+@inject NavigationManager Navigation
+@inject IJSRuntime JS
+
+<div class="container">
+    <div class="action-box row">
+        <div class="action-box-header">
+            <h5>
+                Vartotojai
+            </h5>
+        </div>
+        <div class="action-box-content">
+            <table class="records-table">
+                <thead>
+                    <tr>
+                        <td>Vartotojo ID</td>
+                        <td>Vardas ir pavardė</td>
+                        <td>Balansas</td>
+                        <td>Verslo klientas</td>
+                        <td>Veiksmai</td>
+                    </tr>
+                </thead>
+                <tbody>
+                    @if (UsersData.Count > 0)
+                    {
+
+                        @foreach (var user in UsersData)
+                        {
+                            <tr>
+                                <td><span class="record-text">@user.UserId</span></td>
+                                <td>
+                                    <span class="record-text">@user.FullName</span>
+                                </td>
+                                <td><span class="record-text">@user.Balance EUR</span></td>
+                                <td><span class="record-text">@(user.Business ? "Taip" : "Ne")</span></td>
+                                <td>
+                                    <button @onclick="() => DeleteUserAsync(user.UserId)" class="btn btn-danger">Ištrinti</button>
+                                </td>
+                            </tr>
+                        }
+                    }
+                    else
+                    {
+                        <tr>
+                            <td colspan="4"><span>Nerasta mokėjimų istorijos</span></td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+
+
+@code{
+
+    List<GetUsersResponseDto> UsersData = new();
+
+    protected override async Task OnInitializedAsync()
+    {
+        EBSApp.Models.ApiResponse<List<GetUsersResponseDto>> res = await UsersService.GetUsersAsync();
+
+        if (res.IsSuccess)
+            UsersData = res.Data;
+    }
+
+    async void DeleteUserAsync(int userId)
+    {
+        bool confirmed = await JS.InvokeAsync<bool>("confirm", "Are tikrai norite ištrinti?");
+        if (confirmed)
+        {
+            await UsersService.DeleteUsersAsync(userId);
+            Navigation.NavigateTo(Navigation.Uri, true);
+        }
+
+    }
+}

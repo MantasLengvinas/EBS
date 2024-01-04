@@ -2,12 +2,14 @@
 @using EBSApp.Shared
 
 @inject EBSApp.Models.TokenStore TokenStore
-@inject AuthenticationStateProvider AuthStateProvider
+@inject EBSApp.Models.UserStore UserStore
+@inject AuthenticationStateProvider AuthStateProvider 
+@using System.Security.Claims;
 
 <CascadingAuthenticationState>
     <Router AppAssembly="@typeof(App).Assembly" PreferExactMatches="@true">
         <Found Context="routeData">
-            <RouteView RouteData="@routeData" DefaultLayout="@typeof(MainLayout)" />
+            <AuthorizeRouteView RouteData="@routeData" DefaultLayout="@typeof(MainLayout)" />
             <FocusOnNavigate RouteData="@routeData" Selector="h1" />
         </Found>
         <NotFound>
@@ -24,6 +26,23 @@
     {
         AuthenticationState authState = await AuthStateProvider.GetAuthenticationStateAsync();
 
-        TokenStore.AccessToken = authState.User.Claims.ToList().Find(x => x.Type == "accessToken").Value;
+        TokenStore.AccessToken = GetClaim(authState, "accessToken");
+
+        UserStore.ClientID = GetClaim(authState, "clientId");
+        UserStore.UserId = GetClaim(authState, "id");
+        UserStore.FullName = GetClaim(authState, "fullName");
+        UserStore.Balance = GetClaim(authState, "balance");
+        UserStore.Business = GetClaim(authState, "business");
+
+    }
+
+    private string? GetClaim(AuthenticationState authState, string claimName)
+    {
+        Claim? claim = authState.User.Claims.ToList().Find(x => x.Type == claimName);
+
+        if (claim == null)
+            return null;
+
+        return claim.Value;
     }
 }

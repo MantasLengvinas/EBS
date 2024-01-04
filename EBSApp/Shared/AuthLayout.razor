@@ -18,5 +18,13 @@
         {
             navigation.NavigateTo("login", true);
         }
+
+        var completed = authState.User.Claims.FirstOrDefault(x => x.Type == "completed");
+
+        if (completed == null)
+            return;
+
+        if (completed.Value == "False")
+            navigation.NavigateTo("./clientsetup", false);
     }
 }

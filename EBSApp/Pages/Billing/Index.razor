@@ -1,0 +1,51 @@
+﻿@page "/"
+
+<AddAddress @ref="AddressModal" />
+
+<div class="modal" tabindex="-1" role="dialog" id="addAddress">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">Modal title</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <p>Modal body text goes here.</p>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-primary">Save changes</button>
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+@if (Addresses != null)
+{
+    <div class="container-fluid content-container">
+        @if (Addresses.Count == 0)
+        {
+            <div class="row not-exist-container">
+                <div class="col-md-8 d-flex align-items-center">
+                    <span>
+                        Neturite pridėtų objektų
+                    </span>
+                </div>
+                <div class="col-md-4 actions">
+                    <button @onclick='(() => Navigation.NavigateTo("profile"))' class="btn action-btn">Pridėti objektą</button>
+                </div>
+            </div>
+        }
+
+        @foreach (var address in Addresses)
+        {
+            <ActionBox @key="address.AddressId" ID="@address.AddressId" Address="@address.FullAddress" ProviderID="@address.ProviderId" Provider="@address.ProviderName" Business="@UserStore.Business" />
+        }
+
+    </div>
+}
+
+
+

@@ -1,0 +1,52 @@
+﻿@inject EBSApp.Models.UserStore UserStore
+
+<div class="topmenu container-fluid">
+    <div class="row">
+        <div class="col-md-2">
+            <h1>LOGO</h1>
+        </div>
+        <div class="col-md-6">
+            <AuthorizeView>
+                @if (context.User.Identity.Name == "admin@ebs.lt")
+                {
+                    <ul class="top-menu-items" id="top-menu-navigation">
+                        <li @onclick="() => ChangeIndex(0)" class="@(ActiveIndex == 0 ? "active" : null)"><NavLink href="./users">Vartotojai</NavLink></li>
+                        <li @onclick="() => ChangeIndex(1)" class="@(ActiveIndex == 1 ? "active" : null)"><NavLink href="./addresses">Addresai</NavLink></li>
+                        @*<li @onclick="() => ChangeIndex(2)" class="@(ActiveIndex == 2 ? "active" : null)"><NavLink>Ataskaitos</NavLink></li>*@
+                    </ul>
+                }
+                else
+                {
+                    <ul class="top-menu-items" id="top-menu-navigation">
+                        <li @onclick="() => ChangeIndex(0)" class="@(ActiveIndex == 0 ? "active" : null)"><NavLink href="./">Deklaravimas ir mokėjimas</NavLink></li>
+                        <li @onclick="() => ChangeIndex(1)" class="@(ActiveIndex == 1 ? "active" : null)"><NavLink href="./history">Istorija</NavLink></li>
+                        @*<li @onclick="() => ChangeIndex(2)" class="@(ActiveIndex == 2 ? "active" : null)"><NavLink>Ataskaitos</NavLink></li>*@
+                    </ul>
+                }
+            </AuthorizeView>
+        </div>
+        <div class="col-md-4 d-flex justify-content-end align-items-center">
+            <AuthorizeView>
+                <div class="dropdown-container">
+                    <span class="user-name">@(UserStore.FullName != null ? UserStore.FullName : context.User.Identity.Name)</span>
+                    <div class="dropdown-content">
+                        <a @onclick="() => ChangeIndex(-1)" href="/profile" class="dropdown-content-item">Profilis</a>
+                        <a href="/logout" class="dropdown-content-item">Atsijungti</a>
+                    </div>
+                </div>
+
+            </AuthorizeView>
+
+        </div>
+    </div>
+</div>
+
+@code {
+    int ActiveIndex = 0;
+
+    void ChangeIndex(int i)
+    {
+        ActiveIndex = i;
+    }
+}
+

@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Security.Claims;
 using EBSApp.Models.Authentication;
+using EBSAuthenticationHandler.Helpers;
 using EBSAuthenticationHandler.Services;
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authentication.Cookies;
@@ -21,9 +22,14 @@ namespace EBSApp.Pages
 
         public async Task<IActionResult> OnPostAsync()
         {
+            var address = HttpContext.Connection.RemoteIpAddress;
+            Console.WriteLine(address.MapToIPv4());
+
             UserLogin userLogin = new();
             userLogin.Email = Request.Form["email"];
             userLogin.Password = Request.Form["password"];
+
+            userLogin.Password = PasswordHelper.EncodePassword(userLogin.Password);
 
             AuthenticateResult result = await _authService.LoginUser(userLogin);
 
@@ -34,7 +40,10 @@ namespace EBSApp.Pages
             }
 
             await HttpContext.SignInAsync(result.Principal);
-            return Redirect("./");
+            if (userLogin.Email == "admin@ebs.lt")
+                return Redirect("./users");
+            else
+                return Redirect("./");
         }
     }
 }

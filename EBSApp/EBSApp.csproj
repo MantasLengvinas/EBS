@@ -11,6 +11,7 @@
     <Content Remove="wwwroot\images\" />
     <Content Remove="wwwroot\images\logo\" />
     <Content Remove="wwwroot\scripts\" />
+    <Content Remove="wwwroot\images\icon\" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="wwwroot\images\" />
@@ -21,11 +22,15 @@
     <Folder Include="Models\Authentication\" />
     <Folder Include="Services\" />
     <Folder Include="Services\General\" />
-    <Folder Include="Models\General\" />
     <Folder Include="Models\Dtos\" />
     <Folder Include="Models\Dtos\Responses\" />
-    <Folder Include="Services\Authentication\" />
     <Folder Include="Options\" />
+    <Folder Include="Shared\Components\" />
+    <Folder Include="Pages\ClientView\" />
+    <Folder Include="wwwroot\images\icon\" />
+    <Folder Include="Pages\Billing\" />
+    <Folder Include="Models\Domain\" />
+    <Folder Include="Pages\Admin\" />
   </ItemGroup>
   <ItemGroup>
     <None Remove="Serilog" />
@@ -36,15 +41,17 @@
     <None Remove="Models\Authentication\" />
     <None Remove="Services\" />
     <None Remove="Services\General\" />
-    <None Remove="Models\General\" />
     <None Remove="Newtonsoft.Json" />
     <None Remove="Models\Dtos\" />
     <None Remove="Models\Dtos\Responses\" />
-    <None Remove="Services\Authentication\" />
     <None Remove="Options\" />
+    <None Remove="Shared\Components\" />
+    <None Remove="Pages\ClientView\" />
+    <None Remove="Pages\Billing\" />
+    <None Remove="Models\Domain\" />
+    <None Remove="Pages\Admin\" />
   </ItemGroup>
   <ItemGroup>
-    <PackageReference Include="Serilog" Version="2.12.0" />
     <PackageReference Include="Serilog.Sinks.Console" Version="4.1.0" />
     <PackageReference Include="Serilog.AspNetCore" Version="6.0.1" />
     <PackageReference Include="Newtonsoft.Json" Version="13.0.1" />

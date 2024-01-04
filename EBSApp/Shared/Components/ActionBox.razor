@@ -1,0 +1,91 @@
+﻿<div class="row action-box">
+    <div class="action-box-header">
+        <h5>
+            Elektra
+        </h5>
+        <span>
+            Objekto kodas: <b>@ID</b>
+        </span>
+        <span>
+            Tiekėjas: <b>@Provider</b>
+        </span>
+    </div>
+    <div class="action-box-content">
+        <div class="action-box-content-info">
+            <span class="action-adress">@Address</span>
+            <span class="action-plan">
+                Taikomas <b>@(Business == "True" ? "Verslo" : "Standartinis")</b> planas
+            </span>
+        </div>
+        <table class="records-table">
+            <thead>
+                <tr>
+                    <td></td>
+                    <td>Data</td>
+                    <td>Sąnaudos</td>
+                    <td>Tarifas</td>
+                    <td>Suma</td>
+                </tr>
+            </thead>
+            <tbody>
+                @if (Usages.Count > 0)
+                {
+                    @foreach (var usage in Usages)
+                    {
+                        <tr>
+                            <td><input type="checkbox" @onchange="((value) => SelectToPay(usage.UsageId, value))" /></td>
+                            <td><span class="record-text">@usage.OnDate.ToString("yyyy-MM-dd")</span></td>
+                            <td>
+                                <span class="record-text">@Decimal.Round(usage.ElectricityDue, 2) kWh</span>
+                            </td>
+                            <td><span class="record-text">@Decimal.Round(usage.PaidTariff, 2) EUR / kWh</span></td>
+                            <td><span class="record-text">@Decimal.Round(usage.AmountDue, 2) EUR</span></td>
+                        </tr>
+                    }
+                }
+                else
+                {
+                    <tr><td colspan="5"><span class="record-text">Nerasta nesumokėtų sąskaitų</span></td></tr>
+                }
+                <tr><td></td></tr>
+                <tr>
+                    <td></td>
+                    <td><span class="record-text">@DateTime.Now.ToString("yyyy-MM-dd")</span></td>
+                    <td>
+                        <div class="record-input ml-4">
+                            <input @oninput="((value) => UsageChanged(value))" placeholder="sąnaudos" />
+                            <p>kWh</p>
+                        </div>
+                    </td>
+                    <td><span class="record-text">@CurrentTariff EUR / kWh</span></td>
+                    <td><span class="record-text">@NewSum EUR</span></td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+    <div class="action-box-footer">
+        <span><b>Mokėtina suma</b></span>
+        <div class="record-input ml-1">
+            <input placeholder="Suma" value="@Decimal.Round(PaymentSum, 2)" />
+            <p>EUR</p>
+        </div>
+    </div>
+    <div class="action-box-actions">
+        <button class="btn action-btn gray" @onclick="AddNewUsage">
+            Deklaruoti
+        </button>
+        @if (PaymentSum > 0)
+        {
+            <button @onclick="PayUsages" class="btn action-btn">
+                Mokėti
+            </button>
+        }
+        else
+        {
+            <button disabled class="btn action-btn">
+                Mokėti
+            </button>
+        }
+
+    </div>
+</div>

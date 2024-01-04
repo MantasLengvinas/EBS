@@ -1,0 +1,53 @@
+﻿<div class="action-box row">
+    <div class="action-box-header">
+        <h5>
+            @Address
+        </h5>
+        <span>
+            Objekto kodas: @ID
+        </span>
+    </div>
+    <div class="action-box-content">
+        <table class="records-table">
+            <thead>
+                <tr>
+                    <td>Data</td>
+                    <td>Sąnaudos</td>
+                    <td>Tarifas</td>
+                    <td>Suma</td>
+                </tr>
+            </thead>
+            <tbody>
+                @if(Usages.Count > 0)
+                {
+
+                    @foreach(var usage in Usages)
+                    {
+                        <tr>
+                            <td><span class="record-text">@usage.OnDate.ToString("yyyy-MM-dd")</span></td>
+                            <td>
+                                <span class="record-text">@usage.ElectricityDue kWh</span>
+                            </td>
+                            <td><span class="record-text">@Decimal.Round(usage.PaidTariff, 2) EUR / kWh</span></td>
+                            <td><span class="record-text">@Decimal.Round(usage.AmountDue, 2) EUR</span></td>
+                        </tr>
+                    }
+                }
+                else
+                {
+                    <tr>
+                        <td colspan="4"><span>Nerasta mokėjimų istorijos</span></td>
+                    </tr>
+                }
+            </tbody>
+            <tfoot>
+                <tr>
+                    <td>Bendra sumokėta suma</td>
+                    <td></td>
+                    <td></td>
+                    <td><span class="record-text">@TotalSum EUR</span></td>
+                </tr>
+            </tfoot>
+        </table>
+    </div>
+</div>

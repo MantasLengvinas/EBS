@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Net;
 using System.Threading.Tasks;
 using EBSAuthApi.Models;
 using EBSAuthApi.Models.Dtos.Requests;
@@ -23,12 +24,33 @@ namespace EBSAuthApi.Controllers.Authentication
         }
 
         [HttpPost("login")]
-        public async Task<ActionResult<AuthResponseDto>> AuthenticateUser(UserLogin user, CancellationToken cancelToken)
+        public async Task<IActionResult> AuthenticateUser(UserLogin user, CancellationToken cancelToken)
         {
 
             AuthResponseDto result = await _authService.LoginUserAsync(user, cancelToken);
+            IPAddress address = HttpContext.Connection.RemoteIpAddress;
+            Console.WriteLine(address.MapToIPv4());
 
             return Ok(result);
+        }
+
+        [HttpPost("register")]
+        public async Task<IActionResult> RegisterClient(ClientRegister user, CancellationToken cancelToken)
+        {
+            AuthResponseDto result = await _authService.RegisterClientAsync(user, cancelToken);
+
+            return Ok(result);
+        }
+
+        [HttpPost("complete")]
+        public async Task<IActionResult> CompleteRegistration(CompleteRegistration userInfo, CancellationToken cancelToken)
+        {
+            bool result = await _authService.CompleteRegistrationAsync(userInfo, cancelToken);
+
+            if (result == false)
+                return BadRequest();
+
+            return Ok();
         }
     }
 }
