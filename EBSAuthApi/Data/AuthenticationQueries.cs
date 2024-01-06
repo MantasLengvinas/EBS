@@ -37,7 +37,7 @@ namespace EBSAuthApi.Data
             }
         }
 
-        public async Task<(int, UserInfo?)> LoginUser(string email, string password, CancellationToken cancelToken)
+        public async Task<(int, UserInfo?)> LoginUser(string email, CancellationToken cancelToken)
         {
             DynamicParameters parameters = new();
 

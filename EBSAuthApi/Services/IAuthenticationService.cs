@@ -6,8 +6,10 @@ namespace EBSAuthApi.Services
 {
     public interface IAuthenticationService
     {
-        Task<AuthResponseDto> LoginUserAsync(UserLogin userLogin, CancellationToken cancelToken = default);
-        Task<AuthResponseDto> RegisterClientAsync(ClientRegister userLogin, CancellationToken cancelToken = default);
+        //Task<AuthResponseDto> LoginUserAsync(UserLoginDto userLogin, CancellationToken cancelToken = default);
+        //Task<AuthResponseDto> RegisterClientAsync(UserRegistrationDto userLogin, CancellationToken cancelToken = default);
+        Task<AuthResponseDto> LoginUserAsync(IUserCredentials credentials, CancellationToken cancelToken = default);
+        Task<AuthResponseDto> RegisterUserAsync(IUserCredentials credentials, CancellationToken cancelToken = default);
         Task<bool> CompleteRegistrationAsync(CompleteRegistration userInfo, CancellationToken cancelToken = default);
     }
 }

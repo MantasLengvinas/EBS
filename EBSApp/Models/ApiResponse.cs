@@ -3,7 +3,7 @@ using EBSApp.Models.Dtos.Responses;
 
 namespace EBSApp.Models
 {
-    public class ApiResponse<T> where T : class, new()
+    public class ApiResponse<T>
     {
         public ApiResponse() { }
 

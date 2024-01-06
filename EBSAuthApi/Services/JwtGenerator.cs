@@ -10,7 +10,6 @@ namespace EBSAuthApi.Services
 {
     public class JwtGenerator : IJwtGenerator
     {
-
         private RsaSecurityKey _key;
 
         public JwtGenerator(RsaSecurityKey key)

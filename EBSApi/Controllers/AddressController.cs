@@ -2,6 +2,7 @@
 using EBSApi.Data;
 using Microsoft.AspNetCore.Mvc;
 using EBSApi.Models.Dtos;
+using EBSApi.Enumerations;
 
 namespace EBSApi.Controllers
 {
@@ -81,9 +82,17 @@ namespace EBSApi.Controllers
         {
             int response = await _addressQueries.DeleteAddressAsync(addressId);
 
-            if (response != 0)
-                return BadRequest();
-            return Ok();
+            //return switch (response)
+            //    (int)AddressReturnValues.Ok => Ok();
+
+            return response switch
+            {
+                (int)AddressReturnValues.Ok => Ok(),
+                (int)AddressReturnValues.NoAccess => Forbid(),
+                (int)AddressReturnValues.AddressDoesNotExist => BadRequest("Address does not exist"), // NotFound nėra tinkamas, kadangi duomenys nėra gražinami
+                _ => BadRequest("Unhandled behaviour")
+            };
+
         }
     }
 }
