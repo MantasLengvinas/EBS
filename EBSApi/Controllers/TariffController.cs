@@ -26,19 +26,19 @@ namespace EBSApi.Controllers
         {
             Response<Tariff> response = await _tariffQueries.GetTariffByIdAsync(tariffId);
 
-            if (response.IsSuccess == false)
+            if (!response.IsSuccess)
                 return BadRequest(response);
             if (response.Data == null)
                 return NotFound();
             return Ok(response);
         }
         [EnableCors("Localhost")]
-        [HttpGet("prognosis")]
+        [HttpGet("/provider/{providerId}/prognosis")]
         public async Task<IActionResult> GetTariffPrognosis([Required]int providerId, bool isBusiness, CancellationToken cancellationToken)
         {
             Response<IEnumerable<Tariff>> queryResult = await _tariffQueries.GetHistoricalTariffDataAsync(providerId, isBusiness);
           
-            if (queryResult.IsSuccess == false)
+            if (!queryResult.IsSuccess)
                 return BadRequest(queryResult);
             if (queryResult.Data == null || !queryResult.Data.Any())
                 return NotFound();
@@ -56,7 +56,7 @@ namespace EBSApi.Controllers
         {
             Response<IEnumerable<Tariff>> response = await _tariffQueries.GetLatestTariffsByMonthAsync(year, month, providerId);
 
-            if (response.IsSuccess == false)
+            if (!response.IsSuccess)
                 return BadRequest(response);
             if (response.Data == null || !response.Data.Any())
                 return NotFound();
