@@ -65,7 +65,7 @@
             UsersData = res.Data;
     }
 
-    async void DeleteUserAsync(int userId)
+    async Task DeleteUserAsync(int userId)
     {
         bool confirmed = await JS.InvokeAsync<bool>("confirm", "Are tikrai norite ištrinti?");
         if (confirmed)
