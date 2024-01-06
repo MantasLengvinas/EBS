@@ -37,15 +37,18 @@ namespace EBSAuthenticationHandler.Events
         {
             try
             {
-                Claim expClaim = context.Principal.Claims.FirstOrDefault(x => x.Type == "exp");
-
+                Claim expClaim = context.Principal.Claims.FirstOrDefault(x => x.Type == "exp") ?? throw new ArgumentException("Expiration time cannot be null");
+                
                 context.Properties.SetString(
                     TicketExpirationTime,
                     expClaim.Value);
 
                 await base.SigningIn(context);
             }
-            catch(Exception){}
+            catch(Exception)
+            {
+                await base.RedirectToLogin(default);
+            }
         }
 
         public override async Task ValidatePrincipal(CookieValidatePrincipalContext context)

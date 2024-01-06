@@ -26,18 +26,21 @@ namespace EBSAuthApi.Controllers.Authentication
         [HttpPost("login")]
         public async Task<IActionResult> AuthenticateUser(UserLoginDto user, CancellationToken cancelToken)
         {
-
             AuthResponseDto result = await _authService.LoginUserAsync(user, cancelToken);
-            IPAddress address = HttpContext.Connection.RemoteIpAddress;
-            Console.WriteLine(address.MapToIPv4());
 
-            return Ok(result);
+            if (result.IsSuccess)
+                return Ok(result);
+            if (result.StatusCode == HttpStatusCode.NotFound)
+                return NotFound(result);
+            if (result.StatusCode == HttpStatusCode.BadRequest)
+                return BadRequest(result);
+            else return StatusCode((int)HttpStatusCode.InternalServerError, result);
         }
 
         [HttpPost("register")]
         public async Task<IActionResult> RegisterClient(UserRegistrationDto user, CancellationToken cancelToken)
         {
-            AuthResponseDto result = await _authService.RegisterClientAsync(user, cancelToken);
+            AuthResponseDto result = await _authService.RegisterUserAsync(user, cancelToken);
 
             return Ok(result);
         }

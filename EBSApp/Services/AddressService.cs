@@ -32,7 +32,7 @@ namespace EBSApp.Services
             await _apiClient.PostAsync<GetAddressResponseDto, GetAddressResponseDto>("api/address", address);
         }
 
-        public async Task<ApiResponse<bool>> DeleteAddress(int id)
+        public async Task<bool> DeleteAddress(int id)
         {
             return await _apiClient.DeleteAsync($"api/address/{id}");
         }

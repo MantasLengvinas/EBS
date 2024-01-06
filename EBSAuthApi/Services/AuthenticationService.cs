@@ -206,25 +206,25 @@ namespace EBSAuthApi.Services
         public async Task<AuthResponseDto> LoginUserAsync(IUserCredentials credentials, CancellationToken cancelToken = default)
         {
             if (!ValidateCredentials(credentials, out string errorMessage))
-                return CreateAuthenticationResponse(errorMessage);
+                return CreateAuthenticationResponse(errorMessage, HttpStatusCode.BadRequest);
 
             string savedPassword = await GetSavedPasswordAsync(credentials, cancelToken);
 
             if (savedPassword is null)
-                return CreateAuthenticationResponse("Failed to get user password");
+                return CreateAuthenticationResponse("User does not exist", HttpStatusCode.NotFound);
 
             if (!PasswordHelper.ValidatePassword(credentials.Password, savedPassword))
-                return CreateAuthenticationResponse("Password is incorrect");
+                return CreateAuthenticationResponse("Password is incorrect", HttpStatusCode.BadRequest);
 
             (int returnValue, UserInfo userInfo) = await _authQueries.LoginUser(credentials.Email, cancelToken);
 
             if (returnValue != 0)
-                return CreateAuthenticationResponse(SQLStatusCodeHelper.HandleStatusCode(returnValue, "login"));
+                return CreateAuthenticationResponse(SQLStatusCodeHelper.HandleStatusCode(returnValue, "login"), HttpStatusCode.BadRequest);
 
             string sessionToken = CreateUserSessionToken(userInfo, ref errorMessage);
 
             if (sessionToken is null)
-                return CreateAuthenticationResponse(errorMessage);
+                return CreateAuthenticationResponse(errorMessage, HttpStatusCode.InternalServerError);
 
             return CreateAuthenticationResponse(sessionToken, true);
         }
@@ -232,12 +232,12 @@ namespace EBSAuthApi.Services
         public async Task<AuthResponseDto> RegisterUserAsync(IUserCredentials credentials, CancellationToken cancelToken = default)
         {
             if (!ValidateCredentials(credentials, out string errorMessage))
-                return CreateAuthenticationResponse(errorMessage);
+                return CreateAuthenticationResponse(errorMessage, HttpStatusCode.BadRequest);
 
             (int returnValue, int id) = await _authQueries.RegisterUser(credentials.Email, PasswordHelper.HashPassword(credentials.Password), cancelToken);
 
             if (returnValue != 0)
-                return CreateAuthenticationResponse("Failed to register new user");
+                return CreateAuthenticationResponse("Failed to register new user", HttpStatusCode.BadRequest);
 
             string sessionToken = CreateUserSessionToken(new()
             {
@@ -246,7 +246,7 @@ namespace EBSAuthApi.Services
             }, ref errorMessage);
 
             if (sessionToken is null)
-                return CreateAuthenticationResponse(errorMessage);
+                return CreateAuthenticationResponse(errorMessage, HttpStatusCode.InternalServerError);
 
             return CreateAuthenticationResponse(sessionToken, true);
         }
@@ -320,9 +320,9 @@ namespace EBSAuthApi.Services
             return true;
         }
 
-        private static AuthResponseDto CreateAuthenticationResponse(string errorMessage)
+        private static AuthResponseDto CreateAuthenticationResponse(string errorMessage, HttpStatusCode statusCode)
         {
-            return new AuthResponseDto(errorMessage);
+            return new AuthResponseDto(errorMessage, statusCode);
         }
 
         private static AuthResponseDto CreateAuthenticationResponse(string sessionToken, bool isSuccess)
